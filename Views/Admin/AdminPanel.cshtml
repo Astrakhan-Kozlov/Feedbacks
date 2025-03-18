@@ -1,0 +1,22 @@
+﻿@model List<City>
+@{
+    ViewData["Title"] = "Панель Администратора";
+    var cities = ViewData["cities"];
+}
+
+
+<div class="text-center">
+    <h1 class="display-4">Панель администратора</h1>
+    <form enctype="application/x-www-form-urlencoded" asp-controller="Admin" asp-action="AddCity">
+        <h3>Добавить город в ИС</h3>
+        <p>Существующие города</p>
+        <ul>
+            @foreach (City city in ViewBag.cities)
+            {
+                <li>@city.Name</li>
+            }
+        </ul>
+        <input name="Name" value="Астрахань">
+        <input type="submit" value="Добавить">
+    </form>
+</div>

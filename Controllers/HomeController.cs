@@ -19,6 +19,7 @@ public class HomeController : Controller
     {
         ViewData["Title"] = "Главная";
         ViewData["Username"] = HttpContext.User.FindFirst(ClaimTypes.Name)?.Value;
+        ViewData["Role"] = HttpContext.User.FindFirst(ClaimTypes.Role)?.Value;
         return View();
     }
 

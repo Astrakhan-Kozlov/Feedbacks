@@ -42,6 +42,13 @@
                             </li>
                         }
                         <!--  8888  -->
+                        @if (@ViewData["Role"] != null && @ViewData["Role"].ToString().Equals("admin"))
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Admin" asp-action="AdminPanel">В админ панель</a>
+                            </li>
+                        }
+                        <!--  8888  -->
                     </ul>
                 </div>
             </div>
