@@ -1,8 +1,21 @@
 ﻿@{
-    ViewData["Title"] = "Главная страница";
+    ViewData["Title"] = "Главная";
 }
 
 <div class="text-center">
     <h1 class="display-4">Feedbacks</h1>
-    <p>Тут Список с ресторанами <a href="https://learn.microsoft.com/aspnet/core">Feedbacks</a>.</p>
+    <ul>
+        @foreach (Restaurant restaurant in ViewBag.Restaurants)
+        {
+            <li>Название ресторана: @restaurant.Name
+                <p>Рейтинг: @restaurant.Rating</p>
+                <br>
+            </li>
+        }
+    </ul>
+
+    @if (ViewData["Username"] == null)
+    {
+        <p>Авторизуйтесь, чтобы видеть рестораны своего города</p>
+    }
 </div>

@@ -27,6 +27,7 @@ namespace Feedbacks.Controllers
         {
             var people = this.db.Users.ToList();
             var roles = this.db.Roles.ToList();
+            var cities = this.db.Cities.ToList();
 
             var form = HttpContext.Request.Form;
 
@@ -42,7 +43,8 @@ namespace Feedbacks.Controllers
             var claims = new List<Claim>
             {
                 new Claim(ClaimsIdentity.DefaultNameClaimType, person.Email),
-                new Claim(ClaimsIdentity.DefaultRoleClaimType, roles.Find(c => c.Id == person.RoleId).Name)
+                new Claim(ClaimsIdentity.DefaultRoleClaimType, roles.Find(c => c.Id == person.RoleId).Name),
+                new Claim("city", person.CityId.ToString()) // cities.Find(c => c.Id == person.CityId).Name
             };
 
             ClaimsIdentity claimsIdentity = new ClaimsIdentity(claims, "Cookies");
