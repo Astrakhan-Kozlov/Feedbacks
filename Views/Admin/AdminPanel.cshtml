@@ -7,8 +7,10 @@
 
 <div class="text-center">
     <h1 class="display-4">Панель администратора</h1>
-    <form enctype="application/x-www-form-urlencoded" asp-controller="Admin" asp-action="AddCity">
+    <br>
+    <form enctype="application/x-www-form-urlencoded" action="/Admin/AddCity" method="post">
         <h3>Добавить город в ИС</h3>
+        <!--
         <p>Существующие города</p>
         <ul>
             @foreach (City city in ViewBag.cities)
@@ -16,7 +18,30 @@
                 <li>@city.Name</li>
             }
         </ul>
-        <input name="Name" value="Астрахань">
+        -->
+        <input name="Name">
         <input type="submit" value="Добавить">
     </form>
+    <br>
+    <form enctype="application/x-www-form-urlencoded" action="/Admin/AddRestaurant" method="post">
+        <h3>Добавить заведение в ИС</h3>
+        <!--
+        <p>Существующие заведения</p>
+        <ul>
+            @foreach (Restaurant restaurant in ViewBag.restaurants)
+            {
+                <li>@restaurant.Name</li>
+            }
+        </ul>
+        -->
+        <input name="Name">
+        <select name="CityId">
+            @foreach (City city in ViewBag.cities)
+            {
+                <option value="@city.Id">@city.Name</option>
+            }
+        </select>
+        <input type="submit" value="Добавить">
+    </form>
+
 </div>
