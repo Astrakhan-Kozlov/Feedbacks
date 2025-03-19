@@ -25,7 +25,9 @@ namespace Feedbacks.Controllers
             ViewData["Username"] = HttpContext.User.FindFirst(ClaimTypes.Name)?.Value;
             ViewData["Role"] = HttpContext.User.FindFirst(ClaimTypes.Role)?.Value;
             ViewBag.cities = db.Cities.ToList();
+
             ViewBag.restaurants = db.Restaurants.ToList();
+            ViewBag.Categories = db.RestaurantCategories.ToList();
             return View();
         }
 
@@ -61,6 +63,7 @@ namespace Feedbacks.Controllers
 
             string name = rto.Name;
             int cityId = rto.CityId;
+            int CategoryId = rto.RestorantCategoryId;
             byte[] imageData;
             // считываем переданный файл в массив байтов
             using (var binaryReader = new BinaryReader(rto.RestaurantImage.OpenReadStream()))
@@ -86,7 +89,7 @@ namespace Feedbacks.Controllers
             if (!fl)
                 return Results.Redirect("/Admin/AdminPanel");
             
-            this.db.Restaurants.Add(new Restaurant { Name = name, RestaurantImage = imageData, CityId = cityId });
+            this.db.Restaurants.Add(new Restaurant { Name = name, RestaurantImage = imageData, RestorantCategoryId = CategoryId, Rating = 0, CityId = cityId });
 
             db.SaveChanges();
 

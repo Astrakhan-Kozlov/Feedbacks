@@ -36,13 +36,22 @@
         -->
         <label>Название ресторана:</label>
         <input name="Name">
+        <br>
         <select name="CityId">
             @foreach (City city in ViewBag.cities)
             {
                 <option value="@city.Id">@city.Name</option>
             }
         </select>
+        <br>
         <input type="file" name="RestaurantImage">
+        <br>
+        <select name="RestorantCategoryId">
+            @foreach (RestaurantCategory rc in ViewBag.Categories)
+            {
+                <option value="@rc.Id">@rc.Name</option>
+            }
+        </select>
         <input type="submit" value="Добавить">
     </form>
 
