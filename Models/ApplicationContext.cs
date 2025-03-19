@@ -12,7 +12,7 @@ namespace Feedbacks.Models
         public ApplicationContext(DbContextOptions<ApplicationContext> options)
             : base(options)
         {
-            Database.EnsureDeleted();
+            //Database.EnsureDeleted();
             Database.EnsureCreated();
         }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -28,9 +28,9 @@ namespace Feedbacks.Models
             City city2 = new City { Id = 2, Name = "Хабаровск" };
             City city3 = new City { Id = 3, Name = "Самара" };
 
-            Restaurant restaurant1 = new Restaurant { Id = 1, Name = "Niki Лавка", Rating=5.0, CityId = city1.Id };
-            Restaurant restaurant2 = new Restaurant { Id = 2, Name = "Сыр. Вино&Мясо", Rating=5.0, CityId = city1.Id };
-            Restaurant restaurant3 = new Restaurant { Id = 3, Name = "Белуга", Rating=5.0, CityId = city1.Id };
+            Restaurant restaurant1 = new Restaurant { Id = 1, Name = "Niki Лавка", Rating=5.0, RestaurantImage = File.ReadAllBytes("wwwroot\\restaurants_photo\\Niki.jpg"), CityId = city1.Id };
+            Restaurant restaurant2 = new Restaurant { Id = 2, Name = "Сыр. Вино&Мясо", Rating=5.0, RestaurantImage = File.ReadAllBytes("wwwroot\\restaurants_photo\\сыр_вино_и_мясо.jpg"), CityId = city1.Id };
+            Restaurant restaurant3 = new Restaurant { Id = 3, Name = "Белуга", Rating=5.0, RestaurantImage = File.ReadAllBytes("wwwroot\\restaurants_photo\\Белуга.jpg"), CityId = city1.Id };
 
             modelBuilder.Entity<Role>().HasData(adminRole, userRole);
             modelBuilder.Entity<User>().HasData(bob, tom, sam);

@@ -1,6 +1,8 @@
-﻿using Feedbacks.Models;
+﻿using Feedbacks.DTO;
+using Feedbacks.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
 using System.Security.Claims;
 
 namespace Feedbacks.Controllers
@@ -34,7 +36,7 @@ namespace Feedbacks.Controllers
             var form = HttpContext.Request.Form;
             if (!form.ContainsKey("Name"))
                 return Results.Redirect("/Admin/AdminPanel");
-            string? name = form["Name"];
+            string name = form["Name"];
 
             var cities = this.db.Cities.ToList();
 
@@ -52,41 +54,39 @@ namespace Feedbacks.Controllers
 
         [HttpPost]
         [Route("AddRestaurant")]
-        public IResult AddRestaurant()
+        public IResult AddRestaurant(RestaurantTransferObject rto)
         {
-            var form = HttpContext.Request.Form;
-
-            if (!form.ContainsKey("Name"))
+            if (rto.Name.IsNullOrEmpty() || rto.RestaurantImage == null)
                 return Results.Redirect("/Admin/AdminPanel");
 
-            string? name = form["Name"];
-            int cityId = Int32.Parse(form["CityId"]);
+            string name = rto.Name;
+            int cityId = rto.CityId;
+            byte[] imageData;
+            // считываем переданный файл в массив байтов
+            using (var binaryReader = new BinaryReader(rto.RestaurantImage.OpenReadStream()))
+            {
+                imageData = binaryReader.ReadBytes((int)rto.RestaurantImage.Length);
+            }
 
             var restaurants = this.db.Restaurants.ToList();
             var cities = this.db.Cities.ToList();
             // Проверка на существование ресторана
-            foreach (var restaurant in restaurants)
-            {
-                if (restaurant.Name.Equals(name))
-                {
+            foreach (var restaurant in restaurants) {
+                if (restaurant.Name.Equals(name)) {
                     return Results.Redirect("/Admin/AdminPanel");
                 }
             }
             // Проверка на существование города
             bool fl = false;
-            foreach (var city in cities)
-            {
-                if (city.Id == cityId)
-                {
+            foreach (var city in cities) {
+                if (city.Id == cityId) {
                     fl = true;
                 }
             }
             if (!fl)
-            {
                 return Results.Redirect("/Admin/AdminPanel");
-            }
-
-            this.db.Restaurants.Add(new Restaurant { Name = name, CityId = cityId });
+            
+            this.db.Restaurants.Add(new Restaurant { Name = name, RestaurantImage = imageData, CityId = cityId });
 
             db.SaveChanges();
 

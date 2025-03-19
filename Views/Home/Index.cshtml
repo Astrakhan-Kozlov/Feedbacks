@@ -1,14 +1,18 @@
-﻿@{
+﻿@using Feedbacks.Models
+@model IEnumerable<Restaurant>
+@{
     ViewData["Title"] = "Главная";
 }
 
 <div class="text-center">
     <h1 class="display-4">Feedbacks</h1>
     <ul>
-        @foreach (Restaurant restaurant in ViewBag.Restaurants)
+        @foreach (Restaurant restaurant in Model)
         {
-            <li>Название ресторана: @restaurant.Name
+            <li class="nav-item">
+                <p>Название ресторана: @restaurant.Name</p>
                 <p>Рейтинг: @restaurant.Rating</p>
+                <img width="300" height="300" src="@Url.Action("GetImage", "Home", new { restaurantId = restaurant.Id })">
                 <br>
             </li>
         }

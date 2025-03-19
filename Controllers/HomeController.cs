@@ -23,24 +23,41 @@ public class HomeController : Controller
         if (HttpContext.User.FindFirst(ClaimTypes.Name) != null)
             is_authorized = true;
 
+        IEnumerable<Restaurant> restaurants;
         if (is_authorized)
         {
             ViewData["Username"] = HttpContext.User.FindFirst(ClaimTypes.Name)?.Value;
             ViewData["Role"] = HttpContext.User.FindFirst(ClaimTypes.Role)?.Value;
             int id_users_city = 0;
             Int32.TryParse(HttpContext.User.Claims.Where(c => c.Type == "city").Select(c => c.Value).SingleOrDefault(), out id_users_city);
-            ViewBag.Restaurants = db.Restaurants.ToList().Where(r => r.CityId == id_users_city);
+            //ViewBag.Restaurants = db.Restaurants.ToList().Where(r => r.CityId == id_users_city);
+            restaurants = db.Restaurants.ToList().Where(r => r.CityId == id_users_city);
         }
         else // Если пользователь не авторизован, то отображаем все рестораны
         {
-            ViewBag.Restaurants = db.Restaurants.ToList();
+            //ViewBag.Restaurants = db.Restaurants.ToList();
+            restaurants = db.Restaurants.ToList();
         }
 
-        return View();
+        return View(restaurants);
     }
 
-    public IActionResult Privacy()
+    public FileContentResult? GetImage(int restaurantId)
     {
+        Restaurant? restaurant = db.Restaurants.FirstOrDefault(r => r.Id == restaurantId);
+
+        if (restaurant != null)
+            return File(restaurant.RestaurantImage, "jpeg/jpg");
+
+        return null;
+    }
+
+    [Authorize]
+    public IActionResult Reviews()
+    {
+        ViewData["Username"] = HttpContext.User.FindFirst(ClaimTypes.Name)?.Value;
+        ViewData["Role"] = HttpContext.User.FindFirst(ClaimTypes.Role)?.Value;
+        
         return View();
     }
 

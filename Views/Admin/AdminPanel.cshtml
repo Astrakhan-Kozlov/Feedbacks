@@ -23,7 +23,7 @@
         <input type="submit" value="Добавить">
     </form>
     <br>
-    <form enctype="application/x-www-form-urlencoded" action="/Admin/AddRestaurant" method="post">
+    <form enctype="multipart/form-data" action="/Admin/AddRestaurant" method="post">
         <h3>Добавить заведение в ИС</h3>
         <!--
         <p>Существующие заведения</p>
@@ -34,6 +34,7 @@
             }
         </ul>
         -->
+        <label>Название ресторана:</label>
         <input name="Name">
         <select name="CityId">
             @foreach (City city in ViewBag.cities)
@@ -41,6 +42,7 @@
                 <option value="@city.Id">@city.Name</option>
             }
         </select>
+        <input type="file" name="RestaurantImage">
         <input type="submit" value="Добавить">
     </form>
 
