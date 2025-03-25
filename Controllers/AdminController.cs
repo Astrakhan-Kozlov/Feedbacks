@@ -42,11 +42,11 @@ namespace Feedbacks.Controllers
 
             var cities = this.db.Cities.ToList();
 
-            foreach (var city in cities) {
-                if (city.Name.Equals(name)) {
-                    return Results.Redirect("/Admin/AdminPanel");
-                }
-            }
+            // Проверка на существование города с таким именем
+            bool existance_city = cities.Exists(c => c.Name == name);
+            if (existance_city || name.Equals(""))
+                return Results.Redirect("/Admin/AdminPanel");
+
             this.db.Cities.Add(new City { Name = name });
 
             db.SaveChanges();
@@ -65,7 +65,7 @@ namespace Feedbacks.Controllers
             int cityId = rto.CityId;
             int CategoryId = rto.RestorantCategoryId;
             byte[] imageData;
-            // считываем переданный файл в массив байтов
+
             using (var binaryReader = new BinaryReader(rto.RestaurantImage.OpenReadStream()))
             {
                 imageData = binaryReader.ReadBytes((int)rto.RestaurantImage.Length);
@@ -73,20 +73,15 @@ namespace Feedbacks.Controllers
 
             var restaurants = this.db.Restaurants.ToList();
             var cities = this.db.Cities.ToList();
-            // Проверка на существование ресторана
-            foreach (var restaurant in restaurants) {
-                if (restaurant.Name.Equals(name)) {
-                    return Results.Redirect("/Admin/AdminPanel");
-                }
-            }
+
             // Проверка на существование города
-            bool fl = false;
-            foreach (var city in cities) {
-                if (city.Id == cityId) {
-                    fl = true;
-                }
-            }
-            if (!fl)
+            bool existence_city = cities.Exists(c => c.Id == cityId);
+            if (!existence_city)
+                return Results.Redirect("/Admin/AdminPanel");
+
+            // Проверка на существование ресторана с таким названием в этом городе
+            bool existance_restaurant = restaurants.Exists(r => r.Name == name && r.CityId == cityId);
+            if (existance_restaurant)
                 return Results.Redirect("/Admin/AdminPanel");
             
             this.db.Restaurants.Add(new Restaurant { Name = name, RestaurantImage = imageData, RestorantCategoryId = CategoryId, Rating = 0, CityId = cityId });

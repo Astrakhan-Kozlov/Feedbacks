@@ -2,7 +2,7 @@
 @model IEnumerable<Restaurant>
 @{
     ViewData["Title"] = "Главная";
-    
+
 }
 
 <div class="text-center">
@@ -15,12 +15,24 @@
                 <option value="@rc.Id">@rc.Name</option>
             }
         </select>
+        @if (@ViewData["Username"] == null)
+        {
+            <select id="typeCity" onchange="f()">
+                <option value="0">Все города</option>
+                @foreach (City city in ViewBag.Cities)
+                {
+                    <option value="@city.Id">@city.Name</option>
+                }
+            </select>
+        }
+        
     </h4>
     <ul>
         @foreach (Restaurant restaurant in Model)
         {
-            <li name="@restaurant.RestorantCategoryId" class="restaurant-item">
+            <li name="@restaurant.RestorantCategoryId-@restaurant.CityId" class="restaurant-item">
                 <p>Название ресторана: @restaurant.Name</p>
+                
                 <p>Рейтинг: @restaurant.Rating</p>
                 <img width="300" height="300" src="@Url.Action("GetImage", "Home", new { restaurantId = restaurant.Id })">
                 <p type="hidden" name="category-@restaurant.Id" value="@restaurant.RestorantCategoryId">
@@ -37,18 +49,24 @@
     <script>
         function f() {
             let typeCtg = document.getElementById("typeCat");
+            let typeCity = document.getElementById("typeCity");
             let lst = document.getElementsByClassName("restaurant-item");
-            console.log(typeCtg.value == 0);
-            if (typeCtg.value == 0) {
-              for (i = 0; i < lst.length; i++) {
-                lst[i].style.display = "list-item";
-              }
-              return;
-            }
+            let patt = "";
+            if (typeCtg == null || typeCtg.value == 0)
+                patt += "\\d";
+            else
+                patt += typeCtg.value;
+            patt += "-";
+            if (typeCity == null || typeCity.value == 0)
+                patt += "\\d";
+            else
+                patt += typeCity.value;
+
+            let regex = new RegExp(patt, "gi");
 
             for (i = 0; i < lst.length; i++)
             {
-              if (lst[i].getAttribute("name") != typeCtg.value) {
+              if (lst[i].getAttribute("name").match(regex) == null) {
                 lst[i].style.display = "none";
               } else {
                 lst[i].style.display = "list-item";
@@ -56,4 +74,6 @@
             }
         }
     </script>
+
+
 </div>

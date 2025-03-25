@@ -25,6 +25,7 @@ public class HomeController : Controller
 
         IEnumerable<Restaurant> restaurants;
         ViewBag.Categories = db.RestaurantCategories.ToList();
+        ViewBag.Cities = db.Cities.ToList();
         if (is_authorized)
         {
             ViewData["Username"] = HttpContext.User.FindFirst(ClaimTypes.Name)?.Value;
