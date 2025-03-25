@@ -10,6 +10,7 @@ namespace Feedbacks.Models
         public DbSet<City> Cities { get; set; }
         public DbSet<RestaurantCategory> RestaurantCategories { get; set; }
         public DbSet<Restaurant> Restaurants { get; set; }
+        public DbSet<Review> Reviews { get; set; }
         public ApplicationContext(DbContextOptions<ApplicationContext> options)
             : base(options)
         {

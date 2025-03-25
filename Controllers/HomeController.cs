@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Mvc;
 using Feedbacks.Models;
 using Microsoft.AspNetCore.Authorization;
 using System.Security.Claims;
+using Feedbacks.DTO;
+using Microsoft.EntityFrameworkCore;
 
 namespace Feedbacks.Controllers;
 
@@ -61,8 +63,26 @@ public class HomeController : Controller
     {
         ViewData["Username"] = HttpContext.User.FindFirst(ClaimTypes.Name)?.Value;
         ViewData["Role"] = HttpContext.User.FindFirst(ClaimTypes.Role)?.Value;
-        
-        return View();
+
+        List<Review> reviews = this.db.Reviews.Include(u => u.User).ToList(); // В будущем добавить отбор ресторанов с того же города
+
+        return View(reviews);
+    }
+
+    [Authorize]
+    [HttpPost]
+    public IResult AddReview(ReviewTransferObject rto)
+    {
+        var userEmail = HttpContext.User.FindFirst(ClaimTypes.Name)?.Value;
+        User? user = this.db.Users.ToList().Find(u => u.Email == userEmail);
+
+        Review review = new Review { User = user, Text = rto.Text, Title = rto.Title };
+
+        this.db.Reviews.Add(review);
+
+        this.db.SaveChanges();
+
+        return Results.Redirect("/Home/Reviews");
     }
 
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

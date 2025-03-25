@@ -1,4 +1,6 @@
-﻿namespace Feedbacks.Models
+﻿using System.Numerics;
+
+namespace Feedbacks.Models
 {
     public class User
     {
@@ -7,6 +9,6 @@
         public string Password { get; set; }
         public int CityId { get; set; }
         public int RoleId { get; set; }
-
+        public List<Review> Reviews { get; set; } = new();
     }
 }

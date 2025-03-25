@@ -1,6 +1,30 @@
-﻿@{
+﻿@using Feedbacks.Models
+@model IEnumerable<Review>
+@{
     ViewData["Title"] = "Reviews";
 }
 <h1>@ViewData["Title"]</h1>
 
-<p>Здесь будут перечислены свои отзывы</p>
+@foreach (var review in Model)
+{
+    <div style="border: dashed; width: 40%; border-radius: 6px; margin-bottom: 6px; padding: 6px;">
+        <p><i>@review.User.Email</i> - <b>@review.Title</b></p>
+        <p>@review.Text</p>
+    </div>
+}
+
+<br>
+
+<form method="post" action="/Home/AddReview" enctype="application/x-www-form-urlencoded">
+    <label>Название для отзыва:</label>
+    <br>
+    <input name="Title" type="text" style="width: 55%;" >
+    <br>
+    <label>Текст</label>
+    <br>
+    <textarea name="Text" style="resize: both;"></textarea>
+    <br>
+    <input type="submit" value="Опубликовать отзыв">
+</form>
+
+@* <p>Здесь будут перечислены свои отзывы</p> *@
