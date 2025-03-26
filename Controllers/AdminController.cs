@@ -2,8 +2,8 @@
 using Feedbacks.Models;
 using Feedbacks.Models.enums;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Security.Claims;
@@ -25,12 +25,10 @@ namespace Feedbacks.Controllers
         [Route("AdminPanel")]
         public IActionResult AdminPanel()
         {
-            ViewData["Username"] = HttpContext.User.FindFirst(ClaimTypes.Name)?.Value;
-            ViewData["Role"] = HttpContext.User.FindFirst(ClaimTypes.Role)?.Value;
             ViewBag.cities = db.Cities.ToList();
-
             ViewBag.restaurants = db.Restaurants.ToList();
             ViewBag.Categories = db.RestaurantCategories.ToList();
+
             return View();
         }
 
@@ -39,9 +37,6 @@ namespace Feedbacks.Controllers
         public IActionResult ModerateReviews()
         {
             string? userEmail = HttpContext.User.FindFirst(ClaimTypes.Name)?.Value;
-            ViewData["Username"] = userEmail;
-            ViewData["Role"] = HttpContext.User.FindFirst(ClaimTypes.Role)?.Value;
-
             User user = this.db.Users.ToList().Find(u => u.Email == userEmail);
 
             List<Review> reviews = db.Reviews.Include(u => u.User).Include(r => r.Restaurant).Where(r => r.Status == Convert.ToInt32(StatusOfReview.NotModerated))
@@ -124,6 +119,17 @@ namespace Feedbacks.Controllers
             db.SaveChanges();
 
             return Results.Redirect("/Admin/AdminPanel");
+        }
+
+        public override void OnActionExecuted(ActionExecutedContext context)
+        {
+            base.OnActionExecuted(context);
+            if (context.Result is ViewResult)
+            {
+                ViewData["Username"] = HttpContext.User.FindFirst(ClaimTypes.Name)?.Value;
+                ViewData["Role"] = HttpContext.User.FindFirst(ClaimTypes.Role)?.Value;
+                ViewData["City"] = HttpContext.User.FindFirst("city")?.Value;
+            }
         }
     }
 }

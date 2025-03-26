@@ -6,9 +6,9 @@
         public string Name { get; set; }
         public double Rating { get; set; }
         public int RestorantCategoryId { get; set; }
+        public City City { get; set; }
         public int CityId { get; set; }
         public List<Review> Reviwes { get; set; } = new();
         public byte[] RestaurantImage { get; set; }
     }
 }
-    

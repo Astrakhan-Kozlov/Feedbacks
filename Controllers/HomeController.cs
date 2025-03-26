@@ -6,6 +6,7 @@ using System.Security.Claims;
 using Feedbacks.DTO;
 using Microsoft.EntityFrameworkCore;
 using Feedbacks.Models.enums;
+using Microsoft.AspNetCore.Mvc.Filters;
 
 namespace Feedbacks.Controllers;
 
@@ -27,12 +28,7 @@ public class HomeController : Controller
         ViewBag.Cities = db.Cities.ToList();
         if (User.Identity.IsAuthenticated)
         {
-            ViewData["Username"] = HttpContext.User.FindFirst(ClaimTypes.Name)?.Value;
-            ViewData["Role"] = HttpContext.User.FindFirst(ClaimTypes.Role)?.Value;
-                        
-            int id_users_city = 0;
-            Int32.TryParse(HttpContext.User.Claims.Where(c => c.Type == "city").Select(c => c.Value).SingleOrDefault(), out id_users_city);
-            restaurants = db.Restaurants.ToList().Where(r => r.CityId == id_users_city);
+            restaurants = db.Restaurants.ToList().Where(r => r.City.Name == HttpContext.User.FindFirst("city")?.Value);
         }
         else // Если пользователь не авторизован, то отображаем все рестораны
         {
@@ -54,9 +50,6 @@ public class HomeController : Controller
 
     public IActionResult RestaurantPage(int RestaurantId)
     {
-        ViewData["Username"] = HttpContext.User.FindFirst(ClaimTypes.Name)?.Value;
-        ViewData["Role"] = HttpContext.User.FindFirst(ClaimTypes.Role)?.Value;
-
         Restaurant? restaurant = this.db.Restaurants.ToList().Find(r => r.Id == RestaurantId);
         
         if (restaurant == null)
@@ -72,9 +65,6 @@ public class HomeController : Controller
     public IActionResult Reviews()
     {
         string? emailUser = HttpContext.User.FindFirst(ClaimTypes.Name)?.Value;
-        ViewData["Username"] = emailUser;
-        ViewData["Role"] = HttpContext.User.FindFirst(ClaimTypes.Role)?.Value;
-
         var user = db.Users.ToList().Find(u => u.Email == emailUser);
         List<Review> reviews = db.Reviews.Include(u => u.User).Where(r => r.UserId == user.Id).ToList(); // Только свои отзывы
         ViewBag.restaurants = this.db.Restaurants.ToList().Where(r => r.CityId == user.CityId); // Отбор ресторанов с этого же города
@@ -101,6 +91,17 @@ public class HomeController : Controller
         }            
 
         return Results.Redirect("/Home/Reviews");
+    }
+
+    public override void OnActionExecuted(ActionExecutedContext context)
+    {
+        base.OnActionExecuted(context);
+        if (context.Result is ViewResult)
+        {
+            ViewData["Username"] = HttpContext.User.FindFirst(ClaimTypes.Name)?.Value;
+            ViewData["Role"] = HttpContext.User.FindFirst(ClaimTypes.Role)?.Value;
+            ViewData["City"] = HttpContext.User.FindFirst("city")?.Value;
+        }
     }
 
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

@@ -44,7 +44,7 @@ namespace Feedbacks.Controllers
             {
                 new Claim(ClaimsIdentity.DefaultNameClaimType, person.Email),
                 new Claim(ClaimsIdentity.DefaultRoleClaimType, roles.Find(c => c.Id == person.RoleId).Name),
-                new Claim("city", person.CityId.ToString()) // cities.Find(c => c.Id == person.CityId).Name
+                new Claim("city", person.City.Name)
             };
 
             ClaimsIdentity claimsIdentity = new ClaimsIdentity(claims, "Cookies");
