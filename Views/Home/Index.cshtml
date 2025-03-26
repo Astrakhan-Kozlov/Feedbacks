@@ -31,12 +31,15 @@
         @foreach (Restaurant restaurant in Model)
         {
             <li name="@restaurant.RestorantCategoryId-@restaurant.CityId" class="restaurant-item">
-                <p>Название ресторана: @restaurant.Name</p>
-                
-                <p>Рейтинг: @restaurant.Rating</p>
-                <img width="300" height="300" src="@Url.Action("GetImage", "Home", new { restaurantId = restaurant.Id })">
-                <p type="hidden" name="category-@restaurant.Id" value="@restaurant.RestorantCategoryId">
-                <br>
+                <div style="border: dashed; margin: auto; border-radius: 6px; padding-bottom: 10px; margin-bottom: 10px; width: 350px;">
+                    <p><b>@restaurant.Name</b></p>
+                    <p>Рейтинг: <i>@restaurant.Rating</i></p>
+                    <a href="/Home/RestaurantPage?RestaurantId=@restaurant.Id">
+                        <img width="300" height="300" src="@Url.Action("GetImage", "Home", new { restaurantId = restaurant.Id })">
+                    </a>
+                    @* <p type="hidden" name="category-@restaurant.Id" value="@restaurant.RestorantCategoryId"> *@
+                    <br>
+                </div>
             </li>
         }
     </ul>

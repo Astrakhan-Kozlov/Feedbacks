@@ -22,14 +22,10 @@ public class HomeController : Controller
 
     public IActionResult Index()
     {
-        bool is_authorized = false;
-        if (HttpContext.User.FindFirst(ClaimTypes.Name) != null)
-            is_authorized = true;
-
         IEnumerable<Restaurant> restaurants;
         ViewBag.Categories = db.RestaurantCategories.ToList();
         ViewBag.Cities = db.Cities.ToList();
-        if (is_authorized)
+        if (User.Identity.IsAuthenticated)
         {
             ViewData["Username"] = HttpContext.User.FindFirst(ClaimTypes.Name)?.Value;
             ViewData["Role"] = HttpContext.User.FindFirst(ClaimTypes.Role)?.Value;
@@ -37,7 +33,6 @@ public class HomeController : Controller
             int id_users_city = 0;
             Int32.TryParse(HttpContext.User.Claims.Where(c => c.Type == "city").Select(c => c.Value).SingleOrDefault(), out id_users_city);
             restaurants = db.Restaurants.ToList().Where(r => r.CityId == id_users_city);
-            
         }
         else // Если пользователь не авторизован, то отображаем все рестораны
         {
@@ -57,7 +52,23 @@ public class HomeController : Controller
         return null;
     }
 
+    public IActionResult RestaurantPage(int RestaurantId)
+    {
+        ViewData["Username"] = HttpContext.User.FindFirst(ClaimTypes.Name)?.Value;
+        ViewData["Role"] = HttpContext.User.FindFirst(ClaimTypes.Role)?.Value;
+
+        Restaurant? restaurant = this.db.Restaurants.ToList().Find(r => r.Id == RestaurantId);
+        
+        if (restaurant == null)
+            Results.Redirect("/Home/Index");
+
+        ViewBag.reviews = this.db.Reviews.Include(u => u.User).Where(r => r.Restaurant.Id == restaurant.Id).Where(r => r.Status == Convert.ToInt32(StatusOfReview.Published)).ToList();
+
+        return View(restaurant);
+    }
+
     [Authorize]
+    [HttpGet]
     public IActionResult Reviews()
     {
         string? emailUser = HttpContext.User.FindFirst(ClaimTypes.Name)?.Value;
