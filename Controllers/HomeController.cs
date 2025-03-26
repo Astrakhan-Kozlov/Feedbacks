@@ -61,10 +61,13 @@ public class HomeController : Controller
     [Authorize]
     public IActionResult Reviews()
     {
-        ViewData["Username"] = HttpContext.User.FindFirst(ClaimTypes.Name)?.Value;
+        string? emailUser = HttpContext.User.FindFirst(ClaimTypes.Name)?.Value;
+        ViewData["Username"] = emailUser;
         ViewData["Role"] = HttpContext.User.FindFirst(ClaimTypes.Role)?.Value;
 
-        List<Review> reviews = this.db.Reviews.Include(u => u.User).ToList(); // В будущем добавить отбор ресторанов с того же города
+        var user = db.Users.ToList().Find(u => u.Email == emailUser);
+        List<Review> reviews = this.db.Reviews.Include(u => u.User).ToList();
+        ViewBag.restaurants = this.db.Restaurants.ToList().Where(r => r.CityId == user.CityId); // Отбор ресторанов с этого же города
 
         return View(reviews);
     }
@@ -74,13 +77,17 @@ public class HomeController : Controller
     public IResult AddReview(ReviewTransferObject rto)
     {
         var userEmail = HttpContext.User.FindFirst(ClaimTypes.Name)?.Value;
-        User? user = this.db.Users.ToList().Find(u => u.Email == userEmail);
+        User? user = db.Users.ToList().Find(u => u.Email == userEmail);
+        Restaurant? restaurant = db.Restaurants.ToList().Find(r => r.Id == rto.RestaurantId);
 
-        Review review = new Review { User = user, Text = rto.Text, Title = rto.Title };
+        if (user != null && restaurant != null && Enumerable.Range(0, 10).Contains(rto.Rating))
+        {
+            Review review = new Review { User = user, Text = rto.Text, Title = rto.Title, Restaurant = restaurant, Status = "NotModerated", Rating = rto.Rating };
 
-        this.db.Reviews.Add(review);
+            this.db.Reviews.Add(review);
 
-        this.db.SaveChanges();
+            this.db.SaveChanges();
+        }            
 
         return Results.Redirect("/Home/Reviews");
     }

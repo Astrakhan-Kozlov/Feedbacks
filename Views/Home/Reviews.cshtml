@@ -8,7 +8,7 @@
 @foreach (var review in Model)
 {
     <div style="border: dashed; width: 40%; border-radius: 6px; margin-bottom: 6px; padding: 6px;">
-        <p><i>@review.User.Email</i> - <b>@review.Title</b></p>
+        <p><i>@review.User.Email</i> - <b>@review.Title</b> - @review.Rating баллов</p>
         <p>@review.Text</p>
     </div>
 }
@@ -16,6 +16,15 @@
 <br>
 
 <form method="post" action="/Home/AddReview" enctype="application/x-www-form-urlencoded">
+    <label>Ресторан: </label>
+    <br>
+    <select name="RestaurantId">
+        @foreach (Restaurant restaurant in ViewBag.restaurants)
+        {
+            <option value="@restaurant.Id">@restaurant.Name</option>
+        }
+    </select>
+    <br>
     <label>Название для отзыва:</label>
     <br>
     <input name="Title" type="text" style="width: 55%;" >
@@ -24,6 +33,7 @@
     <br>
     <textarea name="Text" style="resize: both;"></textarea>
     <br>
+    <input name="Rating" type="number" min="0" max="10">
     <input type="submit" value="Опубликовать отзыв">
 </form>
 
