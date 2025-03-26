@@ -1,0 +1,30 @@
+﻿@model List<Review>
+@{
+    ViewData["Title"] = "Панель Администратора";
+}
+
+<div class="text-center">
+    @if (Model.Count > 0)
+    {
+        <p>Новые отзывы</p>
+        <br>
+        @foreach (var review in Model)
+        {
+            <div style="border: dashed; margin: auto; border-radius: 6px; padding-bottom: 6px; width: 350px;">
+                <label>@review.User.Email | Ресторан: @review.Restaurant.Name | Рейтинг: @review.Rating</label>
+                <br>
+                <label>Название отзыва: @review.Title</label>
+                <br>
+                <p>@review.Text</p>
+                <br>
+                <a href="CommitReview?type=publish&ReviewId=@review.Id">Одобрить</a> <a href="CommitReview?type=reject&ReviewId=@review.Id">Отклонить</a>
+            </div>
+        }
+    }
+    else
+    {
+        <p>Новых отзывов пока нет.</p>
+    }
+
+
+</div>

@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Authorization;
 using System.Security.Claims;
 using Feedbacks.DTO;
 using Microsoft.EntityFrameworkCore;
+using Feedbacks.Models.enums;
 
 namespace Feedbacks.Controllers;
 
@@ -32,9 +33,7 @@ public class HomeController : Controller
         {
             ViewData["Username"] = HttpContext.User.FindFirst(ClaimTypes.Name)?.Value;
             ViewData["Role"] = HttpContext.User.FindFirst(ClaimTypes.Role)?.Value;
-
-            
-            
+                        
             int id_users_city = 0;
             Int32.TryParse(HttpContext.User.Claims.Where(c => c.Type == "city").Select(c => c.Value).SingleOrDefault(), out id_users_city);
             restaurants = db.Restaurants.ToList().Where(r => r.CityId == id_users_city);
@@ -66,7 +65,7 @@ public class HomeController : Controller
         ViewData["Role"] = HttpContext.User.FindFirst(ClaimTypes.Role)?.Value;
 
         var user = db.Users.ToList().Find(u => u.Email == emailUser);
-        List<Review> reviews = this.db.Reviews.Include(u => u.User).ToList();
+        List<Review> reviews = db.Reviews.Include(u => u.User).Where(r => r.UserId == user.Id).ToList(); // Только свои отзывы
         ViewBag.restaurants = this.db.Restaurants.ToList().Where(r => r.CityId == user.CityId); // Отбор ресторанов с этого же города
 
         return View(reviews);
@@ -82,7 +81,8 @@ public class HomeController : Controller
 
         if (user != null && restaurant != null && Enumerable.Range(0, 10).Contains(rto.Rating))
         {
-            Review review = new Review { User = user, Text = rto.Text, Title = rto.Title, Restaurant = restaurant, Status = "NotModerated", Rating = rto.Rating };
+            Review review = new Review { User = user, Text = rto.Text, Title = rto.Title, 
+                Restaurant = restaurant, Status = Convert.ToInt32(StatusOfReview.NotModerated), Rating = rto.Rating };
 
             this.db.Reviews.Add(review);
 

@@ -19,9 +19,19 @@
                 </button>
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Reviews">Мои отзывы</a>
-                        </li>
+                        @if (@ViewData["Role"] != null && @ViewData["Role"].ToString().Equals("user"))
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Reviews">Мои отзывы</a>
+                            </li>
+                        }
+                        else if (@ViewData["Role"] != null && @ViewData["Role"].ToString().Equals("admin"))
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Admin" asp-action="ModerateReviews">Отзывы</a>
+                            </li>
+                        }
+
                         <!-- Здесь условный рендеринг. Если не авторизован, то ссылка на /login, иначе ссылка на /logout -->
                         @if (@ViewData["Username"] == null)
                         {

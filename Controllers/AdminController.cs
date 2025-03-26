@@ -1,7 +1,10 @@
 ﻿using Feedbacks.DTO;
 using Feedbacks.Models;
+using Feedbacks.Models.enums;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Security.Claims;
 
@@ -29,6 +32,38 @@ namespace Feedbacks.Controllers
             ViewBag.restaurants = db.Restaurants.ToList();
             ViewBag.Categories = db.RestaurantCategories.ToList();
             return View();
+        }
+
+        [HttpGet]
+        [Route("ModerateReviews")]
+        public IActionResult ModerateReviews()
+        {
+            string? userEmail = HttpContext.User.FindFirst(ClaimTypes.Name)?.Value;
+            ViewData["Username"] = userEmail;
+            ViewData["Role"] = HttpContext.User.FindFirst(ClaimTypes.Role)?.Value;
+
+            User user = this.db.Users.ToList().Find(u => u.Email == userEmail);
+
+            List<Review> reviews = db.Reviews.Include(u => u.User).Include(r => r.Restaurant).Where(r => r.Status == Convert.ToInt32(StatusOfReview.NotModerated))
+                .Where(r => r.User.CityId == user.CityId).ToList(); // Выборка отзывов только с того же города, с которого администратор + неотмодерированные
+            return View(reviews);
+        }
+
+        [HttpGet]
+        [Route("CommitReview")]
+        public IResult CommitReview(string type, int ReviewId)
+        {
+            Review? review = this.db.Reviews.ToList().Find(r => r.Id == ReviewId);
+            if (review != null)
+            {
+                if (type.Equals("publish"))
+                    review.Status = Convert.ToInt32(StatusOfReview.Published);
+                else if (type.Equals("reject"))
+                    review.Status = Convert.ToInt32(StatusOfReview.Rejected);
+                db.SaveChanges();
+            }
+
+            return Results.Redirect("/Admin/ModerateReviews");
         }
 
         [HttpPost]

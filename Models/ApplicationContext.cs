@@ -26,7 +26,7 @@ namespace Feedbacks.Models
             City khabarovsk = new City { Id = 2, Name = "Хабаровск" };
             City samara = new City { Id = 3, Name = "Самара" };
 
-            User bob = new User { Id = 1, CityId = astrakhan.Id, Email = "bob@gmail.com", Password = "12345", RoleId = adminRole.Id };
+            User bob = new User { Id = 1, CityId = astrakhan.Id, Email = "bob@gmail.com", Password = "12345", RoleId = userRole.Id };
             User tom = new User { Id = 2, CityId = astrakhan.Id, Email = "tom@gmail.com", Password = "12345", RoleId = adminRole.Id };
             User sam = new User { Id = 3, CityId = khabarovsk.Id, Email = "sam@gmail.com", Password = "12345", RoleId = userRole.Id };
 
