@@ -1,24 +1,19 @@
 ﻿@page
 @using Feedbacks.Views.Authorized
 
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset='utf-8' />
-    <title>METANIT.COM</title>
-</head>
-<body>
-    <h2>Login Form</h2>
-    <form method='post'>
-        <p>
-            <label>Email</label><br />
-            <input name='email' />
-        </p>
-        <p>
-            <label>Password</label><br />
-            <input type='password' name='password' />
-        </p>
-        <input type='submit' value='Login' />
-    </form>
-</body>
-</html>
+<div class="container mt-5 d-flex justify-content-center">
+    <div class="w-100" style="max-width: 400px;">
+        <h2 class="text-center mb-4">Вход</h2>
+        <form method="post">
+            <div class="mb-3">
+                <label for="email" class="form-label">Email</label>
+                <input type="email" class="form-control" id="email" name="email" required />
+            </div>
+            <div class="mb-3">
+                <label for="password" class="form-label">Пароль</label>
+                <input type="password" class="form-control" id="password" name="password" required />
+            </div>
+            <button type="submit" class="btn btn-primary" style="max-width: 200px; display: block; margin: 0 auto;">Войти</button>
+        </form>
+    </div>
+</div>

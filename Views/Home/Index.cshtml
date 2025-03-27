@@ -2,81 +2,77 @@
 @model IEnumerable<Restaurant>
 @{
     ViewData["Title"] = "Главная";
-
 }
 
-<div class="text-center">
-    <h1 class="display-4">Feedbacks</h1>
-    <h4>
-        <select id="typeCat" onchange="f()">
-            <option value="0">Все категории</option>
-            @foreach (RestaurantCategory rc in ViewBag.Categories)
+<h1 class="display-4">Feedbacks</h1>
+
+<div class="filters">
+    <select id="typeCat" class="form-select" onchange="f()">
+        <option value="0">Все категории</option>
+        @foreach (RestaurantCategory rc in ViewBag.Categories)
+        {
+            <option value="@rc.Id">@rc.Name</option>
+        }
+    </select>
+
+    @if (@ViewData["Username"] == null)
+    {
+        <select id="typeCity" class="form-select" onchange="f()">
+            <option value="0">Все города</option>
+            @foreach (City city in ViewBag.Cities)
             {
-                <option value="@rc.Id">@rc.Name</option>
+                <option value="@city.Id">@city.Name</option>
             }
         </select>
-        @if (@ViewData["Username"] == null)
-        {
-            <select id="typeCity" onchange="f()">
-                <option value="0">Все города</option>
-                @foreach (City city in ViewBag.Cities)
-                {
-                    <option value="@city.Id">@city.Name</option>
-                }
-            </select>
-        }
-        
-    </h4>
-    <ul>
-        @foreach (Restaurant restaurant in Model)
-        {
-            <li name="@restaurant.RestorantCategoryId-@restaurant.CityId" class="restaurant-item">
-                <div style="border: dashed; margin: auto; border-radius: 6px; padding-bottom: 10px; margin-bottom: 10px; width: 350px;">
-                    <p><b>@restaurant.Name</b></p>
-                    <p>Рейтинг: <i>@restaurant.Rating</i></p>
-                    <a href="/Home/RestaurantPage?RestaurantId=@restaurant.Id">
-                        <img width="300" height="300" src="@Url.Action("GetImage", "Home", new { restaurantId = restaurant.Id })">
-                    </a>
-                    @* <p type="hidden" name="category-@restaurant.Id" value="@restaurant.RestorantCategoryId"> *@
-                    <br>
-                </div>
-            </li>
-        }
-    </ul>
-
-    @if (ViewData["Username"] == null)
-    {
-        <p>Авторизуйтесь, чтобы видеть рестораны своего города</p>
     }
+</div>
 
-    <script>
-        function f() {
-            let typeCtg = document.getElementById("typeCat");
-            let typeCity = document.getElementById("typeCity");
-            let lst = document.getElementsByClassName("restaurant-item");
-            let patt = "";
-            if (typeCtg == null || typeCtg.value == 0)
-                patt += "\\d";
-            else
-                patt += typeCtg.value;
-            patt += "-";
-            if (typeCity == null || typeCity.value == 0)
-                patt += "\\d";
-            else
-                patt += typeCity.value;
+<ul class="list-unstyled row">
+    @foreach (Restaurant restaurant in Model)
+    {
+        <li name="@restaurant.RestorantCategoryId-@restaurant.CityId" class="col-md-4 mb-4 restaurant-item">
+            <a href="/Home/RestaurantPage?RestaurantId=@restaurant.Id" class="card" style="border: 1px dashed #ccc; border-radius: 6px; text-decoration: none; color: black;">
+                <img class="card-img-top" src="@Url.Action("GetImage", "Home", new { restaurantId = restaurant.Id })" alt="@restaurant.Name" style="height: 300px; object-fit: cover;">
+                <div class="card-body">
+                    <h5 class="card-title">@restaurant.Name</h5>
+                    <p class="card-text">Рейтинг: <i>@restaurant.Rating</i></p>
+                </div>
+            </a>
+        </li>
+    }
+</ul>
 
-            let regex = new RegExp(patt, "gi");
+@if (ViewData["Username"] == null)
+{
+    <div class="alert alert-info" role="alert">
+        Авторизуйтесь, чтобы видеть рестораны своего города.
+    </div>
+}
 
-            for (i = 0; i < lst.length; i++)
-            {
-              if (lst[i].getAttribute("name").match(regex) == null) {
+<script>
+    function f() {
+        let typeCtg = document.getElementById("typeCat");
+        let typeCity = document.getElementById("typeCity");
+        let lst = document.getElementsByClassName("restaurant-item");
+        let patt = "";
+        if (typeCtg == null || typeCtg.value == 0)
+            patt += "\\d";
+        else
+            patt += typeCtg.value;
+        patt += "-";
+        if (typeCity == null || typeCity.value == 0)
+            patt += "\\d";
+        else
+            patt += typeCity.value;
+
+        let regex = new RegExp(patt, "gi");
+
+        for (let i = 0; i < lst.length; i++) {
+            if (lst[i].getAttribute("name").match(regex) == null) {
                 lst[i].style.display = "none";
-              } else {
-                lst[i].style.display = "list-item";
-              }
+            } else {
+                lst[i].style.display = "block";
             }
         }
-    </script>
-
-
-</div>
+    }
+</script>

@@ -4,68 +4,76 @@
     var cities = ViewData["cities"];
 }
 
+<div class="container text-center">
+    <h1 class="display-4 my-4">Панель администратора</h1>
 
-<div class="text-center">
-    <h1 class="display-4">Панель администратора</h1>
-    <br>
-    <form enctype="application/x-www-form-urlencoded" action="/Admin/AddCity" method="post">
-        <div style="border: dashed; margin: auto; border-radius: 6px; padding-bottom: 6px; width: 350px;">
-            <h3>Добавить город в ИС</h3>
-            <!--
-            <p>Существующие города</p>
-            <ul>
-            @foreach (City city in ViewBag.cities)
-            {
-                <li>@city.Name</li>
-            }
-            </ul>
-            -->
-            <label>Город: </label>
-            <br>
-            <input name="Name">
-            <input type="submit" value="Добавить">
-        </div>
-    </form>
-    <br>
-    <form enctype="multipart/form-data" action="/Admin/AddRestaurant" method="post">
-        <div style="border: dashed; margin: auto; border-radius: 6px; padding-bottom: 6px; width: 350px;">
-            <h3>Добавить заведение в ИС</h3>
-            <!--
-            <p>Существующие заведения</p>
-            <ul>
-            @foreach (Restaurant restaurant in ViewBag.restaurants)
-            {
-                <li>@restaurant.Name</li>
-            }
-            </ul>
-            -->
-            <label><b>Название ресторана:</b></label>
-            <br>
-            <input name="Name">
-            <br><br>
-            <label><b>Город: </b></label>
-            <select name="CityId">
+    <div class="row justify-content-center mb-4">
+        <div class="col-md-6 col-lg-4">
+            <form enctype="application/x-www-form-urlencoded" action="/Admin/AddCity" method="post" class="card p-3">
+                <h3 class="mb-3">Добавить город в ИС</h3>
+                <!--
+                <p>Существующие города</p>
+                <ul>
                 @foreach (City city in ViewBag.cities)
                 {
-                    <option value="@city.Id">@city.Name</option>
+                        <li>@city.Name</li>
                 }
-            </select>
-            <br><br>
-            <label><b>Загрузите изображение ресторана</b></label>
-            <br>
-            <input type="file" name="RestaurantImage">
-            <br><br>
-            <label><b>Категория ресторана: </b></label>
-            <select name="RestorantCategoryId">
-                @foreach (RestaurantCategory rc in ViewBag.Categories)
-                {
-                    <option value="@rc.Id">@rc.Name</option>
-                }
-            </select>
-            <br><br>
-            <input type="submit" value="Добавить">
+                </ul>
+                -->
+                <div class="form-group">
+                    <label>Город:</label>
+                    <input name="Name" type="text" class="form-control" placeholder="Введите название города" required>
+                </div>
+                <button type="submit" class="btn btn-primary btn-block">Добавить</button>
+            </form>
         </div>
-        
-    </form>
+    </div>
 
+    <div class="row justify-content-center">
+        <div class="col-md-6 col-lg-4">
+            <form enctype="multipart/form-data" action="/Admin/AddRestaurant" method="post" class="card p-3">
+                <h3 class="mb-3">Добавить заведение в ИС</h3>
+                <!--
+                <p>Существующие заведения</p>
+                <ul>
+                @foreach (Restaurant restaurant in ViewBag.restaurants)
+                {
+                        <li>@restaurant.Name</li>
+                }
+                </ul>
+                -->
+                <div class="form-group">
+                    <label><b>Название ресторана:</b></label>
+                    <input name="Name" type="text" class="form-control" placeholder="Введите название ресторана" required>
+                </div>
+
+                <div>
+                    <label><b>Город:</b></label>
+                    <select name="CityId" class="form-control" required>
+                        @foreach (City city in ViewBag.cities)
+                        {
+                            <option value="@city.Id">@city.Name</option>
+                        }
+                    </select>
+                </div>
+
+                <div>
+                    <label><b>Загрузите изображение ресторана:</b></label>
+                    <input type="file" name="RestaurantImage" class="form-control-file" required>
+                </div>
+
+                <div>
+                    <label><b>Категория ресторана:</b></label>
+                    <select name="RestorantCategoryId" class="form-control" required>
+                        @foreach (RestaurantCategory rc in ViewBag.Categories)
+                        {
+                            <option value="@rc.Id">@rc.Name</option>
+                        }
+                    </select>
+                </div>
+
+                <button type="submit" class="btn btn-primary btn-block">Добавить</button>
+            </form>
+        </div>
+    </div>
 </div>
