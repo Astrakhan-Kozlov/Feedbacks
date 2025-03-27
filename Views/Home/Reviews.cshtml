@@ -8,11 +8,10 @@
 @foreach (var review in Model)
 {
     <div style="border: dashed; width: 40%; border-radius: 6px; margin-bottom: 6px; padding: 6px;">
-        <p><i>@review.User.Email</i> - <b>@review.Title</b> - @review.Rating баллов</p>
+        <p><i>@review.User.Email</i> - @review.Restaurant.Name - <b>@review.Title</b> - <i>@review.Rating баллов</i> - @ViewBag.dct[review.Status.ToString()]</p>
         <p>@review.Text</p>
     </div>
 }
-
 <br>
 
 <form method="post" action="/Home/AddReview" enctype="application/x-www-form-urlencoded">
@@ -36,5 +35,3 @@
     <input name="Rating" type="number" min="0" max="10">
     <input type="submit" value="Опубликовать отзыв">
 </form>
-
-@* <p>Здесь будут перечислены свои отзывы</p> *@

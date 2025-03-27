@@ -66,6 +66,7 @@ public class HomeController : Controller
     {
         string? emailUser = HttpContext.User.FindFirst(ClaimTypes.Name)?.Value;
         var user = db.Users.ToList().Find(u => u.Email == emailUser);
+        ViewBag.dct = new Dictionary<string, string> { { "0", "Не проверен" }, { "1", "Опубликован" }, { "2", "Отклонен" } };
         List<Review> reviews = db.Reviews.Include(u => u.User).Where(r => r.UserId == user.Id).ToList(); // Только свои отзывы
         ViewBag.restaurants = this.db.Restaurants.ToList().Where(r => r.CityId == user.CityId); // Отбор ресторанов с этого же города
 
