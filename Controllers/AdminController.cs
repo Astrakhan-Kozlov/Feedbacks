@@ -52,7 +52,18 @@ namespace Feedbacks.Controllers
             if (review != null)
             {
                 if (type.Equals("publish"))
+                {
                     review.Status = Convert.ToInt32(StatusOfReview.Published);
+                    Restaurant? restaurant = db.Restaurants.ToList().Find(r => r.Id == review.Restaurant.Id);
+                    if (restaurant == null)
+                        return Results.Redirect("/Admin/ModerateReviews");
+                    double sum = 0;
+                    List<Review> list = restaurant.Reviwes.ToList();
+                    foreach (var elem in list)
+                        sum += elem.Rating;
+                    restaurant.Rating = sum / restaurant.Reviwes.Count;
+                    db.SaveChanges();
+                }                   
                 else if (type.Equals("reject"))
                     review.Status = Convert.ToInt32(StatusOfReview.Rejected);
                 db.SaveChanges();

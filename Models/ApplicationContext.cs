@@ -44,6 +44,7 @@ namespace Feedbacks.Models
             modelBuilder.Entity<City>().HasData(astrakhan, khabarovsk, samara);
             modelBuilder.Entity<RestaurantCategory>().HasData(confectionery, kebab_house, bakery, classic_category);
             modelBuilder.Entity<Restaurant>().HasData(restaurant1, restaurant2, restaurant3);
+            modelBuilder.Entity<Review>().HasOne(r => r.Restaurant).WithMany(r => r.Reviwes).OnDelete(DeleteBehavior.NoAction);
         }
     }
 }
