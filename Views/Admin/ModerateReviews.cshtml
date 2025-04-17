@@ -3,28 +3,38 @@
     ViewData["Title"] = "Панель Администратора";
 }
 
-<div class="text-center">
+<div class="container mt-5">
+    <h2 class="text-center mb-4">Панель модерации отзывов</h2>
+
     @if (Model.Count > 0)
     {
-        <p>Новые отзывы</p>
-        <br>
-        @foreach (var review in Model)
-        {
-            <div style="border: dashed; margin: auto; border-radius: 6px; padding-bottom: 6px; width: 350px;">
-                <label>@review.User.Email | Ресторан: @review.Restaurant.Name | Рейтинг: @review.Rating</label>
-                <br>
-                <label>Название отзыва: @review.Title</label>
-                <br>
-                <p>@review.Text</p>
-                <br>
-                <a href="CommitReview?type=publish&ReviewId=@review.Id">Одобрить</a> <a href="CommitReview?type=reject&ReviewId=@review.Id">Отклонить</a>
-            </div>
-        }
+        <div class="row justify-content-center">
+            @foreach (var review in Model)
+            {
+                <div class="col-md-6 mb-4">
+                    <div class="card shadow border-primary">
+                        <div class="card-header bg-primary text-white">
+                            <strong>@review.User.Email</strong> |
+                            <span class="fw-light">Ресторан: @review.Restaurant.Name</span> |
+                            <span class="fw-light">Рейтинг: @review.Rating</span>
+                        </div>
+                        <div class="card-body">
+                            <h5 class="card-title">Название: @review.Title</h5>
+                            <p class="card-text">@review.Text</p>
+                            <div class="d-flex justify-content-between">
+                                <a href="CommitReview?type=publish&ReviewId=@review.Id" class="btn btn-success btn-sm">Одобрить</a>
+                                <a href="CommitReview?type=reject&ReviewId=@review.Id" class="btn btn-danger btn-sm">Отклонить</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
     }
     else
     {
-        <p>Новых отзывов пока нет.</p>
+        <div class="alert alert-info text-center">
+            Новых отзывов пока нет.
+        </div>
     }
-
-
 </div>

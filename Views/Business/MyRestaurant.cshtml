@@ -1,44 +1,62 @@
-﻿@using Feedbacks.Models
+﻿
+@using Feedbacks.Models
 @model Restaurant
 @{
     ViewData["Title"] = "Главная";
-
+    var reviews = ViewBag.reviews as List<Review>;
+    var role = ViewData["Role"]?.ToString();
 }
 
-<div class="text-center">
-    <p><b>@Model.Name</b></p>
-    <p><i>@Model.Rating Баллов</i></p>
-    <p><img width="300" height="300" src="@Url.Action("GetImage", "Home", new { restaurantId = Model.Id })"></p>
-    @if (((List<Review>)ViewBag.reviews).Count == 0)
-    {
-        <p>О вашем ресторане пока что нет отзывов</p>
-    }
-    else
-    {
-        <p>Вот что пишут о вашем ресторане пользователи:</p>
-    }
-    @foreach (var review in ViewBag.reviews)
-    {
-        <div style="border: dashed; margin: auto; border-radius: 6px; padding-bottom: 6px; width: 350px;">
-            <label><b>@review.User.Email</b> | <i>Рейтинг: @review.Rating</i></label>
-            <br>
-            <label>Название отзыва: @review.Title</label>
-            <br>
-            <p>@review.Text</p>
-            <br>
-            @if (@ViewData["Role"] != null && @ViewData["Role"].ToString().Equals("business") && review.Reply == null)
-            {
-                <a class="text-dark form-label" href="/Business/Reply?reviewId=@review.Id">Ответить</a>
-            }
-        </div>
-        @if (review.Reply != null)
+<div class="container my-5">
+    <div class="text-center mb-4">
+        <h2 class="fw-bold">@Model.Name</h2>
+        <p class="text-muted fs-5">Рейтинг: <strong>@Model.Rating</strong> баллов</p>
+        <img class="img-fluid rounded" style="max-width: 300px;" src="@Url.Action("GetImage", "Home", new { restaurantId = Model.Id })" alt="Изображение ресторана">
+    </div>
+
+    <div class="mt-4">
+        @if (reviews == null || reviews.Count == 0)
         {
-            <div style="border: dashed; margin: 0 0 0 500px; border-radius: 6px; padding-bottom: 6px; width: 350px;">
-                <label><b>@review.Reply.Author.Email</b> | Бизнес аккаунт</label>
-                <br>
-                <p>@review.Reply.Text</p>
+            <div class="alert alert-info text-center">
+                О вашем ресторане пока что нет отзывов.
             </div>
         }
-        <br>
-    }
+        else
+        {
+            <h4 class="mb-4 text-center">Отзывы пользователей</h4>
+            <div class="row justify-content-center">
+                @foreach (var review in reviews)
+                {
+                    <div class="col-md-6 mb-4">
+                        <div class="card shadow-sm">
+                            <div class="card-body">
+                                <h5 class="card-title">@review.Title</h5>
+                                <h6 class="card-subtitle mb-2 text-muted">
+                                    @review.User.Email | Рейтинг: @review.Rating
+                                </h6>
+                                <p class="card-text">@review.Text</p>
+
+                                @if (role == "business" && review.Reply == null)
+                                {
+                                    <a class="btn btn-outline-primary btn-sm" href="/Business/Reply?reviewId=@review.Id">Ответить</a>
+                                }
+                            </div>
+                        </div>
+
+                        @if (review.Reply != null)
+                        {
+                            <div class="card mt-2 ms-md-5 border-start border-3 border-primary shadow-sm">
+                                <div class="card-body">
+                                    <h6 class="card-subtitle mb-2 text-muted">
+                                        @review.Reply.Author.Email | <span class="badge bg-primary">Бизнес аккаунт</span>
+                                    </h6>
+                                    <p class="card-text">@review.Reply.Text</p>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                }
+            </div>
+        }
+    </div>
 </div>

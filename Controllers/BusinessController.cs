@@ -27,9 +27,8 @@ namespace Feedbacks.Controllers
             User? user = db.Users.ToList().Find(u => u.Email == HttpContext.User.FindFirst(ClaimTypes.Name)?.Value);
             Restaurant? restaurant = this.db.Restaurants.ToList().Find(r => r.Id == user?.Restaurant?.Id);
             ViewBag.reviews = this.db.Reviews.Include(u => u.User).Include(r => r.Reply).Where(r => r.Restaurant.Id == restaurant.Id).Where(r => r.Status == Convert.ToInt32(StatusOfReview.Published)).ToList();
-            //if (restaurant != null)
+
             return View(restaurant);
-            //return Results.Redirect("/");
         }
 
         [Route("Reply")]
@@ -37,7 +36,7 @@ namespace Feedbacks.Controllers
         public IActionResult Reply(int ReviewId)
         {
             ViewBag.reviewId = ReviewId;
-            // тут найти отзыв
+            
             Review? review = this.db.Reviews.ToList().Find(r => r.Id == ReviewId);
 
             return View(review);

@@ -5,92 +5,106 @@
     var cities = ViewData["cities"];
 }
 
-<div class="container text-center">
-    <h1 class="display-4 my-4">Панель администратора</h1>
+<div class="container my-5">
+    <h1 class="text-center display-4 mb-5">Панель администратора</h1>
 
     <div class="row justify-content-center mb-4">
-        <div class="col-md-6 col-lg-4">
-            <form enctype="application/x-www-form-urlencoded" action="/Admin/AddCity" method="post" class="card p-3">
-                <h3 class="mb-3">Добавить город в ИС</h3>
-                <p>Существующие города</p>
-                <ul>
-                @foreach (City city in ViewBag.cities)
-                {
-                    <li>@city.Name</li>
-                }
-                </ul>
-                <div class="form-group">
-                    <label>Город:</label>
-                    <input name="Name" type="text" class="form-control" placeholder="Введите название города" required>
+        <div class="col-md-6 col-lg-5">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h4 class="card-title text-center mb-3">Добавить город</h4>
+                    <p><strong>Существующие города:</strong></p>
+                    <ul class="list-group mb-3">
+                        @foreach (City city in ViewBag.cities)
+                        {
+                            <li class="list-group-item">@city.Name</li>
+                        }
+                    </ul>
+                    <form enctype="application/x-www-form-urlencoded" action="/Admin/AddCity" method="post">
+                        <div class="mb-3">
+                            <label class="form-label">Название города:</label>
+                            <input name="Name" type="text" class="form-control" placeholder="Введите название города" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary w-100">Добавить</button>
+                    </form>
                 </div>
-                <button type="submit" class="btn btn-primary btn-block">Добавить</button>
-            </form>
+            </div>
         </div>
     </div>
 
     <div class="row justify-content-center mb-4">
-        <div class="col-md-6 col-lg-4">
-            <form enctype="application/x-www-form-urlencoded" action="/Admin/AddCategory" method="post" class="card p-3">
-                <h3 class="mb-3">Добавить категорию в ИС</h3>
-                <p>Существующие категории</p>
-                <ul>
-                @foreach (RestaurantCategory cat in ViewBag.RestaurantCategories)
-                {
-                    <li>@cat.Name</li>
-                }
-                </ul>
-                <div class="form-group">
-                    <label>Категория:</label>
-                    <input name="name" type="text" class="form-control" placeholder="Введите название категории" required>
+        <div class="col-md-6 col-lg-5">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h4 class="card-title text-center mb-3">Добавить категорию</h4>
+                    <p><strong>Существующие категории:</strong></p>
+                    <ul class="list-group mb-3">
+                        @foreach (RestaurantCategory cat in ViewBag.RestaurantCategories)
+                        {
+                            <li class="list-group-item">@cat.Name</li>
+                        }
+                    </ul>
+                    <form enctype="application/x-www-form-urlencoded" action="/Admin/AddCategory" method="post">
+                        <div class="mb-3">
+                            <label class="form-label">Название категории:</label>
+                            <input name="name" type="text" class="form-control" placeholder="Введите название категории" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary w-100">Добавить</button>
+                    </form>
                 </div>
-                <button type="submit" class="btn btn-primary btn-block">Добавить</button>
-            </form>
+            </div>
         </div>
     </div>
 
     <div class="row justify-content-center">
-        <div class="col-md-6 col-lg-4">
-            <form enctype="multipart/form-data" action="/Admin/AddRestaurant" method="post" class="card p-3">
-                <h3 class="mb-3">Добавить заведение в ИС</h3>
-                <p>Существующие заведения</p>
-                <ul>
-                @foreach (Restaurant restaurant in ViewBag.restaurants)
-                {
-                    <li><a href="/Home/RestaurantPage?RestaurantId=@restaurant.Id">@restaurant.Name</a></li>
-                }
-                </ul>
-                <div class="form-group">
-                    <label><b>Название ресторана:</b></label>
-                    <input name="Name" type="text" class="form-control" placeholder="Введите название ресторана" required>
-                </div>
-
-                <div>
-                    <label><b>Город:</b></label>
-                    <select name="CityId" class="form-control" required>
-                        @foreach (City city in ViewBag.cities)
+        <div class="col-md-8 col-lg-6">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h4 class="card-title text-center mb-3">Добавить заведение</h4>
+                    <p><strong>Существующие заведения:</strong></p>
+                    <ul class="list-group mb-3">
+                        @foreach (Restaurant restaurant in ViewBag.restaurants)
                         {
-                            <option value="@city.Id">@city.Name</option>
+                            <li class="list-group-item">
+                                <a href="/Home/RestaurantPage?RestaurantId=@restaurant.Id">@restaurant.Name</a>
+                            </li>
                         }
-                    </select>
-                </div>
+                    </ul>
+                    <form enctype="multipart/form-data" action="/Admin/AddRestaurant" method="post">
+                        <div class="mb-3">
+                            <label class="form-label"><strong>Название ресторана:</strong></label>
+                            <input name="Name" type="text" class="form-control" placeholder="Введите название ресторана" required>
+                        </div>
 
-                <div>
-                    <label><b>Загрузите изображение ресторана:</b></label>
-                    <input type="file" name="RestaurantImage" class="form-control-file" required>
-                </div>
+                        <div class="mb-3">
+                            <label class="form-label"><strong>Город:</strong></label>
+                            <select name="CityId" class="form-select" required>
+                                @foreach (City city in ViewBag.cities)
+                                {
+                                    <option value="@city.Id">@city.Name</option>
+                                }
+                            </select>
+                        </div>
 
-                <div>
-                    <label><b>Категория ресторана:</b></label>
-                    <select name="RestorantCategoryId" class="form-control" required>
-                        @foreach (RestaurantCategory rc in ViewBag.RestaurantCategories)
-                        {
-                            <option value="@rc.Id">@rc.Name</option>
-                        }
-                    </select>
-                </div>
+                        <div class="mb-3">
+                            <label class="form-label"><strong>Изображение ресторана:</strong></label>
+                            <input type="file" name="RestaurantImage" class="form-control" required>
+                        </div>
 
-                <button type="submit" class="btn btn-primary btn-block">Добавить</button>
-            </form>
+                        <div class="mb-4">
+                            <label class="form-label"><strong>Категория:</strong></label>
+                            <select name="RestorantCategoryId" class="form-select" required>
+                                @foreach (RestaurantCategory rc in ViewBag.RestaurantCategories)
+                                {
+                                    <option value="@rc.Id">@rc.Name</option>
+                                }
+                            </select>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary w-100">Добавить</button>
+                    </form>
+                </div>
+            </div>
         </div>
     </div>
 </div>

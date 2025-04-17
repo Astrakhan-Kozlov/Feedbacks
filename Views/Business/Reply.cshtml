@@ -3,35 +3,26 @@
 @{
     ViewData["Title"] = "Reviews";
 }
-<h1>@ViewData["Title"]</h1>
+<body>
+    <div class="container mt-4">
+        <h1 class="text-center">@ViewData["Title"]</h1>
 
+        <div class="card p-4 mt-4">
+            <h3 class="mb-3">Отзыв</h3>
+            <p><strong>Название отзыва:</strong> @Model.Title</p>
+            <p><strong>Текст отзыва:</strong> @Model.Text</p>
+        </div>
 
-<div>
-    <b>Название отзыва</b>
-    <br>
-    @Model.Title
-    <br>
-    <b>Текст отзыва</b>
-    <br>
-    @Model.Text
-    <br>
-</div>
+        <form method="post" action="/Business/ReplyReview" class="mt-4">
+            <input type="hidden" name="reviewId" value="@ViewBag.reviewId">
 
+            <div class="mb-3">
+                <label for="replyText" class="form-label">Текст ответа</label>
+                <textarea id="replyText" name="text" class="form-control" rows="4" style="resize: both;"></textarea>
+            </div>
 
-@* @foreach ()
-{
-    <div style="border: dashed; width: 40%; border-radius: 6px; margin-bottom: 6px; padding: 6px;">
-        <p><i>@review.User.Email</i> - @review.Restaurant.Name - <b>@review.Title</b> - <i>@review.Rating баллов</i> - @ViewBag.dct[review.Status.ToString()]</p>
-        <p>@review.Text</p>
+            <button type="submit" class="btn btn-primary">Опубликовать ответ</button>
+        </form>
     </div>
-} *@
-<br>
 
-<form method="post" action="/Business/ReplyReview">
-    <input type="hidden" name="reviewId" value="@ViewBag.reviewId">
-    <label>Текст</label>
-    <br>
-    <textarea name="text" style="resize: both;"></textarea>
-    <br>
-    <input type="submit" value="Опубликовать ответ">
-</form>
+</body>

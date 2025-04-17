@@ -30,7 +30,7 @@ public class HomeController : Controller
         {
             restaurants = db.Restaurants.ToList().Where(r => r.City.Name == HttpContext.User.FindFirst("city")?.Value);
         }
-        else // Если пользователь не авторизован, то отображаем все рестораны
+        else
         {
             restaurants = db.Restaurants.ToList();
         }
