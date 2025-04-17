@@ -1,4 +1,5 @@
-﻿using System.Numerics;
+﻿using System.ComponentModel.DataAnnotations.Schema;
+using System.Numerics;
 
 namespace Feedbacks.Models
 {
@@ -8,6 +9,9 @@ namespace Feedbacks.Models
         public string Email { get; set; }
         public string Password { get; set; }
         public City City { get; set; }
+        [ForeignKey("RestaurantId")]
+        public Restaurant? Restaurant { get; set; }
+        public int? RestaurantId { get; set; }
         public int CityId { get; set; }
         public int RoleId { get; set; }
         public List<Review> Reviews { get; set; } = new();

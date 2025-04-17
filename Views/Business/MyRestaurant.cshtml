@@ -11,11 +11,11 @@
     <p><img width="300" height="300" src="@Url.Action("GetImage", "Home", new { restaurantId = Model.Id })"></p>
     @if (((List<Review>)ViewBag.reviews).Count == 0)
     {
-        <p>Отзывов о ресторане пока что нет</p>
+        <p>О вашем ресторане пока что нет отзывов</p>
     }
     else
     {
-        <p>Вот что пишут об этом ресторане пользователи:</p>
+        <p>Вот что пишут о вашем ресторане пользователи:</p>
     }
     @foreach (var review in ViewBag.reviews)
     {
@@ -26,6 +26,10 @@
             <br>
             <p>@review.Text</p>
             <br>
+            @if (@ViewData["Role"] != null && @ViewData["Role"].ToString().Equals("business") && review.Reply == null)
+            {
+                <a class="text-dark form-label" href="/Business/Reply?reviewId=@review.Id">Ответить</a>
+            }
         </div>
         @if (review.Reply != null)
         {

@@ -27,7 +27,7 @@ namespace Feedbacks.Controllers
         {
             ViewBag.cities = db.Cities.ToList();
             ViewBag.restaurants = db.Restaurants.ToList();
-            ViewBag.Categories = db.RestaurantCategories.ToList();
+            ViewBag.RestaurantCategories = db.RestaurantCategories.ToList();
 
             return View();
         }
@@ -37,7 +37,7 @@ namespace Feedbacks.Controllers
         public IActionResult ModerateReviews()
         {
             string? userEmail = HttpContext.User.FindFirst(ClaimTypes.Name)?.Value;
-            User user = this.db.Users.ToList().Find(u => u.Email == userEmail);
+            User? user = this.db.Users.ToList().Find(u => u.Email == userEmail);
 
             List<Review> reviews = db.Reviews.Include(u => u.User).Include(r => r.Restaurant).Where(r => r.Status == Convert.ToInt32(StatusOfReview.NotModerated))
                 .Where(r => r.User.CityId == user.CityId).ToList(); // Выборка отзывов только с того же города, с которого администратор + неотмодерированные
@@ -127,6 +127,19 @@ namespace Feedbacks.Controllers
             
             this.db.Restaurants.Add(new Restaurant { Name = name, RestaurantImage = imageData, RestorantCategoryId = CategoryId, Rating = 0, CityId = cityId });
 
+            db.SaveChanges();
+
+            return Results.Redirect("/Admin/AdminPanel");
+        }
+
+        [HttpPost]
+        [Route("AddCategory")]
+        public IResult AddCategory(string name)
+        {
+            if (name.IsNullOrEmpty())
+                return Results.Redirect("/Admin/AdminPanel");
+
+            this.db.RestaurantCategories.Add(new RestaurantCategory { Name = name});
             db.SaveChanges();
 
             return Results.Redirect("/Admin/AdminPanel");

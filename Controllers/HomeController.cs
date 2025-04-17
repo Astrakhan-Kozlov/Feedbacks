@@ -26,7 +26,7 @@ public class HomeController : Controller
         IEnumerable<Restaurant> restaurants;
         ViewBag.Categories = db.RestaurantCategories.ToList();
         ViewBag.Cities = db.Cities.ToList();
-        if (User.Identity.IsAuthenticated)
+        if (User.Identity != null && User.Identity.IsAuthenticated)
         {
             restaurants = db.Restaurants.ToList().Where(r => r.City.Name == HttpContext.User.FindFirst("city")?.Value);
         }
@@ -54,8 +54,8 @@ public class HomeController : Controller
         
         if (restaurant == null)
             Results.Redirect("/Home/Index");
-
-        ViewBag.reviews = this.db.Reviews.Include(u => u.User).Where(r => r.Restaurant.Id == restaurant.Id).Where(r => r.Status == Convert.ToInt32(StatusOfReview.Published)).ToList();
+        
+        ViewBag.reviews = this.db.Reviews.Include(u => u.User).Include(r => r.Reply).ThenInclude(r => r.Author).Where(r => r.Restaurant.Id == restaurant.Id).Where(r => r.Status == Convert.ToInt32(StatusOfReview.Published)).ToList();
 
         return View(restaurant);
     }
@@ -89,7 +89,7 @@ public class HomeController : Controller
             this.db.Reviews.Add(review);
 
             this.db.SaveChanges();
-        }            
+        }
 
         return Results.Redirect("/Home/Reviews");
     }

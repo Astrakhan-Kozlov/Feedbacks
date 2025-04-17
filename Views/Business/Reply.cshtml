@@ -1,0 +1,37 @@
+﻿@using Feedbacks.Models
+@model Feedbacks.Models.Review
+@{
+    ViewData["Title"] = "Reviews";
+}
+<h1>@ViewData["Title"]</h1>
+
+
+<div>
+    <b>Название отзыва</b>
+    <br>
+    @Model.Title
+    <br>
+    <b>Текст отзыва</b>
+    <br>
+    @Model.Text
+    <br>
+</div>
+
+
+@* @foreach ()
+{
+    <div style="border: dashed; width: 40%; border-radius: 6px; margin-bottom: 6px; padding: 6px;">
+        <p><i>@review.User.Email</i> - @review.Restaurant.Name - <b>@review.Title</b> - <i>@review.Rating баллов</i> - @ViewBag.dct[review.Status.ToString()]</p>
+        <p>@review.Text</p>
+    </div>
+} *@
+<br>
+
+<form method="post" action="/Business/ReplyReview">
+    <input type="hidden" name="reviewId" value="@ViewBag.reviewId">
+    <label>Текст</label>
+    <br>
+    <textarea name="text" style="resize: both;"></textarea>
+    <br>
+    <input type="submit" value="Опубликовать ответ">
+</form>

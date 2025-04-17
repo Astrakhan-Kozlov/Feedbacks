@@ -1,0 +1,55 @@
+﻿@page
+@using Feedbacks.Views.Authorized
+
+<div class="container mt-5 d-flex justify-content-center">
+    <div class="w-100" style="max-width: 400px;">
+        <h2 class="text-center mb-4">Регистрация</h2>
+        <form method="post" onSubmit="return checkPassword(this)">
+            <div class="mb-3">
+                <label for="email" class="form-label">Email</label>
+                <input type="email" class="form-control" id="email" name="Email" required />
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Выберете свой город</label>
+                <select id="CityId" name="CityId" class="form-select">
+                    @foreach (City city in ViewBag.Cities)
+                    {
+                        <option value="@city.Id">@city.Name</option>
+                    }
+                </select>
+            </div>
+            <div class="mb-3">
+                <label for="password" class="form-label">Пароль</label>
+                <input type="password" class="form-control" id="Password" name="Password" required />
+            </div>
+            <div class="mb-3">
+                <label for="password" class="form-label">Повтор пароля</label>
+                <input type="password" class="form-control" id="Password2" name="Password2" required />
+            </div>
+            <button type="submit" class="btn btn-primary" style="max-width: 200px; display: block; margin: 0 auto;">Зарегистрироваться</button>
+        </form>
+        <a href="/Login">Авторизоваться</a>
+    </div>
+</div>
+
+<script>
+    function checkPassword(form) {
+        password1 = form.Password.value;
+        password2 = form.Password2.value;
+
+        if (password1 == '')
+            alert("Please enter Password");
+
+        else if (password2 == '')
+            alert("Please enter confirm password");
+
+        else if (password1 != password2) {
+            alert("\nPassword did not match: Please try again...")
+            return false;
+        }
+
+        else
+            return true;
+        
+    }
+</script>

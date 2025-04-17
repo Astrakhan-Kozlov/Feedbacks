@@ -4,6 +4,7 @@ using Feedbacks.Models;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication;
 using System.Security.Claims;
+using Feedbacks.DTO;
 
 namespace Feedbacks.Controllers
 {
@@ -14,6 +15,34 @@ namespace Feedbacks.Controllers
         public AuthorizeController(ApplicationContext context)
         {
             this.db = context;
+        }
+
+        [HttpGet]
+        public IActionResult Register()
+        {
+            ViewBag.Cities = db.Cities.ToList();
+
+            return View();
+        }
+
+        [HttpPost]
+        public IResult Register(AccountTransferObject ato)
+        {
+            var users = this.db.Users.ToList();
+            if (ato.Email == null || users.Find(u => u.Email == ato.Email) != null)
+                return Results.Redirect("Home/Index");
+
+            if (ato?.CityId == null || ato?.Password == null)
+                return Results.Redirect("Home/Index");
+            
+            City? city = this.db.Cities.ToList().Find(c => c.Id == ato.CityId);
+            if (city != null)
+            {
+                this.db.Users.Add(new User { Email = ato.Email, City = city, Password = ato.Password, RoleId = db.Roles.ToList().Find(r => r.Name == "user").Id });
+                this.db.SaveChanges();
+            }
+
+            return Results.Redirect("Home/Index");
         }
 
         [HttpGet]
@@ -38,17 +67,31 @@ namespace Feedbacks.Controllers
             string? password = form["password"];
 
             User? person = people.FirstOrDefault(p => p.Email == email && p.Password == password);
-            if (person is null) return Results.Unauthorized(); // 401
-
-            var claims = new List<Claim>
+            User? businessPerson = db.Users.ToList().FirstOrDefault(p => p.Email == email && p.Password == password);
+            var claims = new List<Claim> { };
+            if (person != null)
             {
-                new Claim(ClaimsIdentity.DefaultNameClaimType, person.Email),
-                new Claim(ClaimsIdentity.DefaultRoleClaimType, roles.Find(c => c.Id == person.RoleId).Name),
-                new Claim("city", person.City.Name)
-            };
+                claims = new List<Claim>
+                {
+                    new Claim(ClaimsIdentity.DefaultNameClaimType, person.Email),
+                    new Claim(ClaimsIdentity.DefaultRoleClaimType, roles.Find(c => c.Id == person.RoleId).Name),
+                    new Claim("city", person.City.Name)
+                };
+            }
+            else if (businessPerson != null)
+            {
+                claims = new List<Claim>
+                {
+                    new Claim(ClaimsIdentity.DefaultNameClaimType, businessPerson.Email),
+                    new Claim(ClaimsIdentity.DefaultRoleClaimType, roles.Find(c => c.Id == businessPerson.RoleId).Name),
+                    new Claim("city", businessPerson.City.Name),
+                    new Claim("restaurantId", businessPerson.Restaurant.Id.ToString())
+                };
+            }
+            else
+                return Results.Unauthorized(); // 401
 
             ClaimsIdentity claimsIdentity = new ClaimsIdentity(claims, "Cookies");
-
             // установка аутентификационных кук
             HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity));
             return Results.Redirect(returnUrl ?? "/");
