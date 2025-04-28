@@ -8,7 +8,10 @@
 <div class="text-center">
     <p><b>@Model.Name</b></p>
     <p><i>@Model.Rating Баллов</i></p>
-    <p><img width="300" height="300" src="@Url.Action("GetImage", "Home", new { restaurantId = Model.Id })"></p>
+    @for (int i = 0; i < ViewBag.count_photo; i++)
+    {
+        <p><img width="300" height="300" src="@Url.Action("GetImage", "Restaurant", new { restaurantId = Model.Id, imageId = @i })"></p>
+    }
     @if (((List<Review>)ViewBag.reviews).Count == 0)
     {
         <p>Отзывов о ресторане пока что нет</p>

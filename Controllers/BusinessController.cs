@@ -21,16 +21,6 @@ namespace Feedbacks.Controllers
             this.db = context;
         }
 
-        [Route("MyRestaurant")]
-        public IActionResult MyRestaurant()
-        {
-            User? user = db.Users.ToList().Find(u => u.Email == HttpContext.User.FindFirst(ClaimTypes.Name)?.Value);
-            Restaurant? restaurant = this.db.Restaurants.ToList().Find(r => r.Id == user?.Restaurant?.Id);
-            ViewBag.reviews = this.db.Reviews.Include(u => u.User).Include(r => r.Reply).Where(r => r.Restaurant.Id == restaurant.Id).Where(r => r.Status == Convert.ToInt32(StatusOfReview.Published)).ToList();
-
-            return View(restaurant);
-        }
-
         [Route("Reply")]
         [HttpGet]
         public IActionResult Reply(int ReviewId)

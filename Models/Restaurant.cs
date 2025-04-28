@@ -9,6 +9,6 @@
         public City City { get; set; }
         public int CityId { get; set; }
         public List<Review> Reviwes { get; set; } = new();
-        public byte[] RestaurantImage { get; set; }
+        public List<string> RestaurantImage { get; set; } = new List<string>();
     }
 }

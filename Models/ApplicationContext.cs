@@ -40,10 +40,13 @@ namespace Feedbacks.Models
             RestaurantCategory bakery = new RestaurantCategory { Id = 3, Name = "Пекарня" };
             RestaurantCategory classic_category = new RestaurantCategory { Id = 4, Name = "Классический" };
 
-            Restaurant restaurant1 = new Restaurant { Id = 1, Name = "Niki", RestorantCategoryId = confectionery.Id, Rating =.0, RestaurantImage = File.ReadAllBytes("wwwroot\\restaurants_photo\\Niki.jpg"), CityId = astrakhan.Id };
-            Restaurant restaurant2 = new Restaurant { Id = 2, Name = "Сыр. Вино&Мясо", RestorantCategoryId = classic_category.Id, Rating =.0, RestaurantImage = File.ReadAllBytes("wwwroot\\restaurants_photo\\сыр_вино_и_мясо.jpg"), CityId = astrakhan.Id };
-            Restaurant restaurant3 = new Restaurant { Id = 3, Name = "Белуга", RestorantCategoryId = classic_category.Id, Rating =.0, RestaurantImage = File.ReadAllBytes("wwwroot\\restaurants_photo\\Белуга.jpg"), CityId = khabarovsk.Id };
-
+            Restaurant restaurant1 = new Restaurant { Id = 1, Name = "Niki", RestorantCategoryId = confectionery.Id, Rating =.0, CityId = astrakhan.Id };
+            Restaurant restaurant2 = new Restaurant { Id = 2, Name = "Сыр. Вино&Мясо", RestorantCategoryId = classic_category.Id, Rating =.0, CityId = astrakhan.Id };
+            Restaurant restaurant3 = new Restaurant { Id = 3, Name = "Белуга", RestorantCategoryId = classic_category.Id, Rating =.0, CityId = khabarovsk.Id };
+            restaurant1.RestaurantImage.Add("8dad5855-9251-4e48-af6c-eee068ba103c");
+            restaurant2.RestaurantImage.Add("b08d7289-700f-41df-b2d0-463cadcd7fd8");
+            restaurant3.RestaurantImage.Add("8721db32-5b48-40f0-9955-874b4d711ca2");
+            
             rob.RestaurantId = restaurant1.Id;
             rob2.RestaurantId = restaurant2.Id;
             rob3.RestaurantId = restaurant3.Id;

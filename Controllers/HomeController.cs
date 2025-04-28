@@ -38,28 +38,6 @@ public class HomeController : Controller
         return View(restaurants);
     }
 
-    public FileContentResult? GetImage(int restaurantId)
-    {
-        Restaurant? restaurant = db.Restaurants.FirstOrDefault(r => r.Id == restaurantId);
-
-        if (restaurant != null)
-            return File(restaurant.RestaurantImage, "jpeg/jpg");
-
-        return null;
-    }
-
-    public IActionResult RestaurantPage(int RestaurantId)
-    {
-        Restaurant? restaurant = this.db.Restaurants.ToList().Find(r => r.Id == RestaurantId);
-        
-        if (restaurant == null)
-            Results.Redirect("/Home/Index");
-        
-        ViewBag.reviews = this.db.Reviews.Include(u => u.User).Include(r => r.Reply).ThenInclude(r => r.Author).Where(r => r.Restaurant.Id == restaurant.Id).Where(r => r.Status == Convert.ToInt32(StatusOfReview.Published)).ToList();
-
-        return View(restaurant);
-    }
-
     [Authorize]
     [HttpGet]
     public IActionResult Reviews()

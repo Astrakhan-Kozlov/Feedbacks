@@ -125,7 +125,7 @@ namespace Feedbacks.Controllers
             if (existance_restaurant)
                 return Results.Redirect("/Admin/AdminPanel");
             
-            this.db.Restaurants.Add(new Restaurant { Name = name, RestaurantImage = imageData, RestorantCategoryId = CategoryId, Rating = 0, CityId = cityId });
+            this.db.Restaurants.Add(new Restaurant { Name = name, RestorantCategoryId = CategoryId, Rating = 0, CityId = cityId });
 
             db.SaveChanges();
 

@@ -11,7 +11,16 @@
     <div class="text-center mb-4">
         <h2 class="fw-bold">@Model.Name</h2>
         <p class="text-muted fs-5">Рейтинг: <strong>@Model.Rating</strong> баллов</p>
-        <img class="img-fluid rounded" style="max-width: 300px;" src="@Url.Action("GetImage", "Home", new { restaurantId = Model.Id })" alt="Изображение ресторана">
+        @for (int i = 0; i < ViewBag.count_photo; i++)
+        {
+            <p><img class="img-fluid rounded" style="max-width: 300px;" src="@Url.Action("GetImage", "Restaurant", new { restaurantId = Model.Id, imageId = @i })"></p>
+            <a href="/Restaurant/DeletePhotoToRestaurant?restaurantId=@Model.Id&restaurantImageId=@i">Удалить это фото</a>
+        }
+        <form asp-action="AddImageToRestaurant" asp-controller="Restaurant" method="post" enctype="multipart/form-data">
+            <input type="hidden" name="restaurantId" value="@Model.Id" />
+            <input type="file" name="RestaurantImage" /><br>
+            <input type="submit" value="Загрузить" />
+        </form>
     </div>
 
     <div class="mt-4">

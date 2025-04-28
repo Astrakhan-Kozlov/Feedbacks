@@ -31,8 +31,8 @@
     @foreach (Restaurant restaurant in Model)
     {
         <li name="@restaurant.RestorantCategoryId-@restaurant.CityId" class="col-md-4 mb-4 restaurant-item">
-            <a href="/Home/RestaurantPage?RestaurantId=@restaurant.Id" class="card" style="border: 1px dashed #ccc; border-radius: 6px; text-decoration: none; color: black;">
-                <img class="card-img-top" src="@Url.Action("GetImage", "Home", new { restaurantId = restaurant.Id })" alt="@restaurant.Name" style="height: 300px; object-fit: cover;">
+            <a href="/Restaurant/RestaurantPage?RestaurantId=@restaurant.Id" class="card" style="border: 1px dashed #ccc; border-radius: 6px; text-decoration: none; color: black;">
+                <img class="card-img-top" src="@Url.Action("GetImage", "Restaurant", new { restaurantId = restaurant.Id, imageId = 0 })" alt="@restaurant.Name" style="height: 300px; object-fit: cover;">
                 <div class="card-body">
                     <h5 class="card-title">@restaurant.Name</h5>
                     <p class="card-text">Рейтинг: <i>@restaurant.Rating</i></p>
