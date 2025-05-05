@@ -1,4 +1,5 @@
-﻿using Feedbacks.Models;
+﻿using Feedbacks.DTO;
+using Feedbacks.Models;
 using Feedbacks.Models.enums;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -21,6 +22,43 @@ namespace Feedbacks.Controllers
             this.db = context;
             _appEnvironment = appEnvironment;
         }
+
+        /*[HttpPost]
+        [Route("AddRestaurant")]
+        public IResult AddRestaurant(RestaurantDTO rto)
+        {
+            if (String.IsNullOrEmpty(rto.Name) || rto.RestaurantImage == null)
+                return (IResult)BadRequest(new { message = "Invalid data" });
+
+            string name = rto.Name;
+            int cityId = rto.CityId;
+            int CategoryId = rto.RestorantCategoryId;
+            byte[] imageData;
+
+            using (var binaryReader = new BinaryReader(rto.RestaurantImage.OpenReadStream()))
+            {
+                imageData = binaryReader.ReadBytes((int)rto.RestaurantImage.Length);
+            }
+
+            var restaurants = this.db.Restaurants.ToList();
+            var cities = this.db.Cities.ToList();
+
+            // Проверка на существование города
+            bool existence_city = cities.Exists(c => c.Id == cityId);
+            if (!existence_city)
+                return (IResult)BadRequest(new { message = "Invalid city" }); // Results.Redirect("/Admin/AdminPanel");
+
+            // Проверка на существование ресторана с таким названием в этом городе
+            bool existance_restaurant = restaurants.Exists(r => r.Name == name && r.CityId == cityId);
+            if (existance_restaurant)
+                return (IResult)BadRequest(new { message = "Restaurant with this name already exists in this city" });
+
+            this.db.Restaurants.Add(new Restaurant { Name = name, RestorantCategoryId = CategoryId, Rating = 0, CityId = cityId, Activated = false });
+
+            db.SaveChanges();
+
+            return Results.Ok(); //Results.Redirect("/Admin/AdminPanel");
+        }*/
 
         [Authorize(Roles = "business")]
         [Route("DeletePhotoToRestaurant")]

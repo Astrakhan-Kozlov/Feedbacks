@@ -28,11 +28,11 @@ public class HomeController : Controller
         ViewBag.Cities = db.Cities.ToList();
         if (User.Identity != null && User.Identity.IsAuthenticated)
         {
-            restaurants = db.Restaurants.ToList().Where(r => r.City.Name == HttpContext.User.FindFirst("city")?.Value);
+            restaurants = db.Restaurants.ToList().Where(r => r.City.Name == HttpContext.User.FindFirst("city")?.Value).Where(r => r.Activated);
         }
         else
         {
-            restaurants = db.Restaurants.ToList();
+            restaurants = db.Restaurants.ToList().Where(r => r.Activated);
         }
 
         return View(restaurants);
@@ -53,13 +53,13 @@ public class HomeController : Controller
 
     [Authorize]
     [HttpPost]
-    public IResult AddReview(ReviewTransferObject rto)
+    public IResult AddReview(ReviewDTO rto)
     {
         var userEmail = HttpContext.User.FindFirst(ClaimTypes.Name)?.Value;
         User? user = db.Users.ToList().Find(u => u.Email == userEmail);
         Restaurant? restaurant = db.Restaurants.ToList().Find(r => r.Id == rto.RestaurantId);
 
-        if (user != null && restaurant != null && Enumerable.Range(0, 10).Contains(rto.Rating))
+        if (user != null && restaurant != null && Enumerable.Range(0, 11).Contains(rto.Rating))
         {
             Review review = new Review { User = user, Text = rto.Text, Title = rto.Title, 
                 Restaurant = restaurant, Status = Convert.ToInt32(StatusOfReview.NotModerated), Rating = rto.Rating };

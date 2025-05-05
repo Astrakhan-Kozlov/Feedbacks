@@ -56,55 +56,24 @@
         </div>
     </div>
 
-    <div class="row justify-content-center">
-        <div class="col-md-8 col-lg-6">
+    <div class="row justify-content-center mb-4">
+        <div class="col-md-6 col-lg-5">
             <div class="card shadow-sm">
                 <div class="card-body">
-                    <h4 class="card-title text-center mb-3">Добавить заведение</h4>
-                    <p><strong>Существующие заведения:</strong></p>
+                    <h4 class="card-title text-center mb-3">Изменить статус у ресторанов</h4>
                     <ul class="list-group mb-3">
                         @foreach (Restaurant restaurant in ViewBag.restaurants)
                         {
-                            <li class="list-group-item">
-                                <a href="/Home/RestaurantPage?RestaurantId=@restaurant.Id">@restaurant.Name</a>
+                            <li class="list-group-item">@restaurant.Name | Опубликован: @restaurant.Activated |
+                                <a href="/Admin/ChangeStatusRestaurant?restaurant_id=@restaurant.Id">Изменить статус</a>
                             </li>
                         }
                     </ul>
-                    <form enctype="multipart/form-data" action="/Admin/AddRestaurant" method="post">
-                        <div class="mb-3">
-                            <label class="form-label"><strong>Название ресторана:</strong></label>
-                            <input name="Name" type="text" class="form-control" placeholder="Введите название ресторана" required>
-                        </div>
-
-                        <div class="mb-3">
-                            <label class="form-label"><strong>Город:</strong></label>
-                            <select name="CityId" class="form-select" required>
-                                @foreach (City city in ViewBag.cities)
-                                {
-                                    <option value="@city.Id">@city.Name</option>
-                                }
-                            </select>
-                        </div>
-
-                        <div class="mb-3">
-                            <label class="form-label"><strong>Изображение ресторана:</strong></label>
-                            <input type="file" name="RestaurantImage" class="form-control" required>
-                        </div>
-
-                        <div class="mb-4">
-                            <label class="form-label"><strong>Категория:</strong></label>
-                            <select name="RestorantCategoryId" class="form-select" required>
-                                @foreach (RestaurantCategory rc in ViewBag.RestaurantCategories)
-                                {
-                                    <option value="@rc.Id">@rc.Name</option>
-                                }
-                            </select>
-                        </div>
-
-                        <button type="submit" class="btn btn-primary w-100">Добавить</button>
-                    </form>
+                    
+                    
                 </div>
             </div>
         </div>
     </div>
+    
 </div>

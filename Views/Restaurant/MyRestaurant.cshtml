@@ -10,6 +10,10 @@
 <div class="container my-5">
     <div class="text-center mb-4">
         <h2 class="fw-bold">@Model.Name</h2>
+        @if (Model.Activated == false)
+        {
+            <p>Ваш ресторан скрыт от пользователей</p>
+        }
         <p class="text-muted fs-5">Рейтинг: <strong>@Model.Rating</strong> баллов</p>
         @for (int i = 0; i < ViewBag.count_photo; i++)
         {

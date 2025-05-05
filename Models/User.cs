@@ -14,6 +14,7 @@ namespace Feedbacks.Models
         public int? RestaurantId { get; set; }
         public int CityId { get; set; }
         public int RoleId { get; set; }
+        public bool Activated { get; set; } = true;
         public List<Review> Reviews { get; set; } = new();
     }
 }

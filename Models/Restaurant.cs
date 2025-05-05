@@ -8,6 +8,7 @@
         public int RestorantCategoryId { get; set; }
         public City City { get; set; }
         public int CityId { get; set; }
+        public bool Activated { get; set; }
         public List<Review> Reviwes { get; set; } = new();
         public List<string> RestaurantImage { get; set; } = new List<string>();
     }

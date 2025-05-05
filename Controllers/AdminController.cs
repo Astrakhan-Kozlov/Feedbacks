@@ -28,7 +28,7 @@ namespace Feedbacks.Controllers
             ViewBag.cities = db.Cities.ToList();
             ViewBag.restaurants = db.Restaurants.ToList();
             ViewBag.RestaurantCategories = db.RestaurantCategories.ToList();
-
+            
             return View();
         }
 
@@ -72,6 +72,21 @@ namespace Feedbacks.Controllers
             return Results.Redirect("/Admin/ModerateReviews");
         }
 
+
+        [HttpGet]
+        [Route("ChangeStatusRestaurant")]
+        public IResult ChangeStatusRestaurant(int restaurant_id)
+        {
+            Restaurant? restaurant = db.Restaurants.ToList().Find(r => r.Id == restaurant_id);
+            if (restaurant == null)
+            {
+                return Results.BadRequest();
+            }
+            restaurant.Activated = !restaurant.Activated;
+            db.SaveChanges();
+            return Results.Redirect("/Admin/AdminPanel");
+        }
+
         [HttpPost]
         [Route("AddCity")]
         public IResult AddCity()
@@ -79,6 +94,7 @@ namespace Feedbacks.Controllers
             var form = HttpContext.Request.Form;
             if (!form.ContainsKey("Name"))
                 return Results.Redirect("/Admin/AdminPanel");
+            
             string name = form["Name"];
 
             var cities = this.db.Cities.ToList();
@@ -89,43 +105,6 @@ namespace Feedbacks.Controllers
                 return Results.Redirect("/Admin/AdminPanel");
 
             this.db.Cities.Add(new City { Name = name });
-
-            db.SaveChanges();
-
-            return Results.Redirect("/Admin/AdminPanel");
-        }
-
-        [HttpPost]
-        [Route("AddRestaurant")]
-        public IResult AddRestaurant(RestaurantTransferObject rto)
-        {
-            if (rto.Name.IsNullOrEmpty() || rto.RestaurantImage == null)
-                return Results.Redirect("/Admin/AdminPanel");
-
-            string name = rto.Name;
-            int cityId = rto.CityId;
-            int CategoryId = rto.RestorantCategoryId;
-            byte[] imageData;
-
-            using (var binaryReader = new BinaryReader(rto.RestaurantImage.OpenReadStream()))
-            {
-                imageData = binaryReader.ReadBytes((int)rto.RestaurantImage.Length);
-            }
-
-            var restaurants = this.db.Restaurants.ToList();
-            var cities = this.db.Cities.ToList();
-
-            // Проверка на существование города
-            bool existence_city = cities.Exists(c => c.Id == cityId);
-            if (!existence_city)
-                return Results.Redirect("/Admin/AdminPanel");
-
-            // Проверка на существование ресторана с таким названием в этом городе
-            bool existance_restaurant = restaurants.Exists(r => r.Name == name && r.CityId == cityId);
-            if (existance_restaurant)
-                return Results.Redirect("/Admin/AdminPanel");
-            
-            this.db.Restaurants.Add(new Restaurant { Name = name, RestorantCategoryId = CategoryId, Rating = 0, CityId = cityId });
 
             db.SaveChanges();
 

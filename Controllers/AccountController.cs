@@ -5,44 +5,105 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication;
 using System.Security.Claims;
 using Feedbacks.DTO;
+using Humanizer;
 
 namespace Feedbacks.Controllers
 {
-    public class AuthorizeController : Controller
+    public class AccountController : Controller
     {
         ApplicationContext db;
-
-        public AuthorizeController(ApplicationContext context)
+        private readonly IWebHostEnvironment _appEnvironment;
+        
+        public AccountController(ApplicationContext context, IWebHostEnvironment appEnvironment)
         {
             this.db = context;
+            _appEnvironment = appEnvironment;
         }
 
         [HttpGet]
         public IActionResult Register()
         {
             ViewBag.Cities = db.Cities.ToList();
+            ViewBag.RestaurantCategories = db.RestaurantCategories.ToList();
 
             return View();
         }
 
-        [HttpPost]
-        public IResult Register(AccountTransferObject ato)
+        public IResult RegisterBusinessUserAndRestaurant(AccountDTO account, RestaurantDTO restaurant)
+        {
+            User? user = GetUser(account);
+            if (user == null)
+            {
+                return Results.BadRequest(new { message = "User is already registered" });
+            }
+            // User по умолчанию не активирован
+            this.db.Users.Add(user);
+
+            if (String.IsNullOrEmpty(restaurant.Name) || restaurant.RestaurantImage == null)
+                return Results.BadRequest(new { message = "Invalid data" });
+
+            string name = restaurant.Name;
+            int cityId = restaurant.CityId;
+            int CategoryId = restaurant.RestorantCategoryId;
+
+            string fileName = Guid.NewGuid().ToString();
+
+            byte[] buffer = new byte[restaurant.RestaurantImage.Length];
+            restaurant.RestaurantImage.OpenReadStream().Read(buffer, 0, (int)restaurant.RestaurantImage.Length);
+
+            System.IO.File.WriteAllBytes(_appEnvironment.WebRootPath + "/restaurants_photo/" + fileName + ".jpg", buffer);
+
+            var restaurants = db.Restaurants.ToList();
+            var cities = db.Cities.ToList();
+
+            // Проверка на существование города
+            bool existence_city = cities.Exists(c => c.Id == cityId);
+            if (!existence_city)
+                return Results.BadRequest(new { message = "Invalid city" });
+
+            // Проверка на существование ресторана с таким названием в этом городе
+            bool existance_restaurant = restaurants.Exists(r => r.Name == name && r.CityId == cityId);
+            if (existance_restaurant)
+                return Results.BadRequest(new { message = "Restaurant with this name already exists in this city" });
+
+            Restaurant new_restaurant = new Restaurant { Name = name, RestorantCategoryId = CategoryId, Rating = 0, CityId = cityId, Activated = false };
+            new_restaurant.RestaurantImage.Add(fileName);
+            this.db.Restaurants.Add(new_restaurant);
+
+            db.SaveChanges();
+                      
+            return Results.Redirect("/");
+        }
+
+        private User? GetUser(AccountDTO ato)
         {
             var users = this.db.Users.ToList();
             if (ato.Email == null || users.Find(u => u.Email == ato.Email) != null)
-                return Results.Redirect("Home/Index");
+                return null;
 
             if (ato?.CityId == null || ato?.Password == null)
-                return Results.Redirect("Home/Index");
-            
+                return null;
+
             City? city = this.db.Cities.ToList().Find(c => c.Id == ato.CityId);
             if (city != null)
             {
-                this.db.Users.Add(new User { Email = ato.Email, City = city, Password = ato.Password, RoleId = db.Roles.ToList().Find(r => r.Name == "user").Id });
+                User user = new User { Email = ato.Email, City = city, Password = ato.Password, RoleId = db.Roles.ToList().Find(r => r.Name == "user").Id, Activated = false };
+                return user;
+            }
+            return null;
+        }
+
+        [HttpPost]
+        public IResult Register(AccountDTO ato)
+        {
+            User? user = GetUser(ato);
+            if (user != null)
+            {
+                user.Activated = true;
+                this.db.Users.Add(user);
                 this.db.SaveChanges();
             }
-
-            return Results.Redirect("Home/Index");
+            return Results.Redirect("/");
         }
 
         [HttpGet]

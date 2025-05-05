@@ -1,6 +1,6 @@
 ﻿namespace Feedbacks.DTO
 {
-    public class RestaurantTransferObject
+    public class RestaurantDTO
     {
         public string Name { get; set; }
         public int CityId { get; set; }
