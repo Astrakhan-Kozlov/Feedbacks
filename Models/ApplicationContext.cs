@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Feedbacks.Helpers;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace Feedbacks.Models
@@ -28,12 +29,14 @@ namespace Feedbacks.Models
             City khabarovsk = new City { Id = 2, Name = "Хабаровск" };
             City samara = new City { Id = 3, Name = "Самара" };
 
-            User bob = new User { Id = 1, CityId = astrakhan.Id, Email = "bob@gmail.com", Password = "12345", RoleId = userRole.Id };
-            User tom = new User { Id = 2, CityId = astrakhan.Id, Email = "tom@gmail.com", Password = "12345", RoleId = adminRole.Id };
-            User sam = new User { Id = 3, CityId = khabarovsk.Id, Email = "sam@gmail.com", Password = "12345", RoleId = userRole.Id };
-            User rob = new User { Id = 4, CityId = astrakhan.Id, Email = "rob@gmail.com", Password = "12345", RoleId = businessRole.Id };
-            User rob2 = new User { Id = 5, CityId = astrakhan.Id, Email = "rob2@gmail.com", Password = "12345", RoleId = businessRole.Id };
-            User rob3 = new User { Id = 6, CityId = astrakhan.Id, Email = "rob3@gmail.com", Password = "12345", RoleId = businessRole.Id };
+            string pass = PasswordHasherHelper.HashString("12345");
+
+            User bob = new User { Id = 1, CityId = astrakhan.Id, Email = "bob@gmail.com", Password = pass, RoleId = userRole.Id };
+            User tom = new User { Id = 2, CityId = astrakhan.Id, Email = "tom@gmail.com", Password = pass, RoleId = adminRole.Id };
+            User sam = new User { Id = 3, CityId = khabarovsk.Id, Email = "sam@gmail.com", Password = pass, RoleId = userRole.Id };
+            User rob = new User { Id = 4, CityId = astrakhan.Id, Email = "rob@gmail.com", Password = pass, RoleId = businessRole.Id };
+            User rob2 = new User { Id = 5, CityId = astrakhan.Id, Email = "rob2@gmail.com", Password = pass, RoleId = businessRole.Id };
+            User rob3 = new User { Id = 6, CityId = astrakhan.Id, Email = "rob3@gmail.com", Password = pass, RoleId = businessRole.Id };
 
             RestaurantCategory confectionery = new RestaurantCategory { Id = 1, Name = "Кондитерская" };
             RestaurantCategory kebab_house = new RestaurantCategory { Id = 2, Name = "Шашлычная" };

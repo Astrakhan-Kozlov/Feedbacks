@@ -1,11 +1,12 @@
 ﻿using System.Diagnostics;
-using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 using Feedbacks.Models;
+using Feedbacks.DTO;
+using Feedbacks.Helpers;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication;
-using System.Security.Claims;
-using Feedbacks.DTO;
-using Humanizer;
+
 
 namespace Feedbacks.Controllers
 {
@@ -87,7 +88,7 @@ namespace Feedbacks.Controllers
             City? city = this.db.Cities.ToList().Find(c => c.Id == ato.CityId);
             if (city != null)
             {
-                User user = new User { Email = ato.Email, City = city, Password = ato.Password, RoleId = db.Roles.ToList().Find(r => r.Name == "user").Id, Activated = false };
+                User user = new User { Email = ato.Email, City = city, Password = PasswordHasherHelper.HashString(ato.Password), RoleId = db.Roles.ToList().Find(r => r.Name == "user").Id, Activated = false };
                 return user;
             }
             return null;
@@ -126,6 +127,8 @@ namespace Feedbacks.Controllers
 
             string? email = form["email"];
             string? password = form["password"];
+            if (password != null)
+                password = PasswordHasherHelper.HashString(password);
 
             User? person = people.FirstOrDefault(p => p.Email == email && p.Password == password);
             User? businessPerson = db.Users.ToList().FirstOrDefault(p => p.Email == email && p.Password == password);
