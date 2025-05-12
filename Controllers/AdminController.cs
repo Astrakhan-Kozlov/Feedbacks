@@ -28,7 +28,9 @@ namespace Feedbacks.Controllers
             ViewBag.cities = db.Cities.ToList();
             ViewBag.restaurants = db.Restaurants.ToList();
             ViewBag.RestaurantCategories = db.RestaurantCategories.ToList();
-            
+            var role = db.Roles.ToList().Find(r => r.Name == "business");
+            ViewBag.businessUsers = db.Users.ToList().Where(u => u.RoleId == role.Id);
+
             return View();
         }
 
@@ -72,7 +74,6 @@ namespace Feedbacks.Controllers
             return Results.Redirect("/Admin/ModerateReviews");
         }
 
-
         [HttpGet]
         [Route("ChangeStatusRestaurant")]
         public IResult ChangeStatusRestaurant(int restaurant_id)
@@ -83,6 +84,20 @@ namespace Feedbacks.Controllers
                 return Results.BadRequest();
             }
             restaurant.Activated = !restaurant.Activated;
+            db.SaveChanges();
+            return Results.Redirect("/Admin/AdminPanel");
+        }
+
+        [HttpGet]
+        [Route("ChangeStatusUser")]
+        public IResult ChangeStatusUser(int user_id)
+        {
+            User? user = db.Users.ToList().Find(u => u.Id == user_id);
+            if (user == null)
+            {
+                return Results.BadRequest();
+            }
+            user.Activated = !user.Activated;
             db.SaveChanges();
             return Results.Redirect("/Admin/AdminPanel");
         }

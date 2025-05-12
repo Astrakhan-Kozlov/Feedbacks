@@ -131,25 +131,18 @@ namespace Feedbacks.Controllers
                 password = PasswordHasherHelper.HashString(password);
 
             User? person = people.FirstOrDefault(p => p.Email == email && p.Password == password);
-            User? businessPerson = db.Users.ToList().FirstOrDefault(p => p.Email == email && p.Password == password);
             var claims = new List<Claim> { };
             if (person != null)
             {
+                if (!person.Activated)
+                {
+                    return Results.BadRequest("Аккаунт не активирован");
+                }
                 claims = new List<Claim>
                 {
                     new Claim(ClaimsIdentity.DefaultNameClaimType, person.Email),
                     new Claim(ClaimsIdentity.DefaultRoleClaimType, roles.Find(c => c.Id == person.RoleId).Name),
                     new Claim("city", person.City.Name)
-                };
-            }
-            else if (businessPerson != null)
-            {
-                claims = new List<Claim>
-                {
-                    new Claim(ClaimsIdentity.DefaultNameClaimType, businessPerson.Email),
-                    new Claim(ClaimsIdentity.DefaultRoleClaimType, roles.Find(c => c.Id == businessPerson.RoleId).Name),
-                    new Claim("city", businessPerson.City.Name),
-                    new Claim("restaurantId", businessPerson.Restaurant.Id.ToString())
                 };
             }
             else
