@@ -33,19 +33,24 @@ namespace Feedbacks.Controllers
         public IResult RegisterBusinessUserAndRestaurant(AccountDTO account, RestaurantDTO restaurant)
         {
             User? user = GetUser(account);
+
+            string name = restaurant.Name;
+            int cityId = restaurant.CityId;
+            int CategoryId = restaurant.RestorantCategoryId;
+
+            Restaurant new_restaurant = new Restaurant { Name = name, RestorantCategoryId = CategoryId, Rating = 0, CityId = cityId, Activated = false, Address = "", Description = "" };
+            
             if (user == null)
             {
                 return Results.BadRequest(new { message = "User is already registered" });
             }
+            user.RoleId = db.Roles.ToList().Find(r => r.Name == "business").Id;
+            user.Restaurant = new_restaurant;
             // User по умолчанию не активирован
             this.db.Users.Add(user);
 
             if (String.IsNullOrEmpty(restaurant.Name) || restaurant.RestaurantImage == null)
                 return Results.BadRequest(new { message = "Invalid data" });
-
-            string name = restaurant.Name;
-            int cityId = restaurant.CityId;
-            int CategoryId = restaurant.RestorantCategoryId;
 
             string fileName = Guid.NewGuid().ToString();
 
@@ -67,7 +72,6 @@ namespace Feedbacks.Controllers
             if (existance_restaurant)
                 return Results.BadRequest(new { message = "Restaurant with this name already exists in this city" });
 
-            Restaurant new_restaurant = new Restaurant { Name = name, RestorantCategoryId = CategoryId, Rating = 0, CityId = cityId, Activated = false };
             new_restaurant.RestaurantImage.Add(fileName);
             this.db.Restaurants.Add(new_restaurant);
 

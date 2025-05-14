@@ -29,8 +29,8 @@ namespace Feedbacks.Controllers
             ViewBag.restaurants = db.Restaurants.ToList();
             ViewBag.RestaurantCategories = db.RestaurantCategories.ToList();
             var role = db.Roles.ToList().Find(r => r.Name == "business");
-            ViewBag.businessUsers = db.Users.ToList().Where(u => u.RoleId == role.Id);
-
+            ViewBag.businessUsers = db.Users.ToList().Where(u => u.RoleId == role.Id).ToList();
+            Console.WriteLine(db.Users.ToList().Where(u => u.RoleId == role.Id).ToList());
             return View();
         }
 
